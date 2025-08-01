@@ -1,9 +1,10 @@
 #!/bin/bash
 
-# Script to generate a prompt for the Agentic TDD workflow and optionally install globally
+# Script to generate a prompt for Cascade workflows and optionally install globally
 # This script will:
-# 1. Generate and copy the workflow prompt for Cascade
-# 2. Optionally install the script globally for use from any directory
+# 1. Generate and copy workflow prompts for Cascade
+# 2. Install multiple workflows from the ./workflows folder
+# 3. Optionally install the script globally for use from any directory
 
 set -e  # Exit on any error
 
@@ -132,15 +133,63 @@ if [ "$1" = "--uninstall" ] || [ "$1" = "-u" ]; then
   uninstall_globally
 fi
 
+# Function to list available workflows
+list_workflows() {
+  echo -e "${BLUE}Available workflows:${NC}"
+  
+  WINDSURF_INSTALL_PATH="$HOME/.codeium/windsurf/workflows"
+  if [ -d "$WINDSURF_INSTALL_PATH" ]; then
+    # List workflows in the installation directory
+    WORKFLOWS=$(find "$WINDSURF_INSTALL_PATH" -name "*.md" -type f -exec basename {} \; | sort)
+    
+    if [ -z "$WORKFLOWS" ]; then
+      echo -e "${YELLOW}No workflows found in $WINDSURF_INSTALL_PATH${NC}"
+      
+      # Check if we have workflows in the repository
+      if [ -d "$SCRIPT_DIR/../workflows" ]; then
+        echo -e "${BLUE}Workflows available in repository (not installed):${NC}"
+        find "$SCRIPT_DIR/../workflows" -name "*.md" -type f -exec basename {} \; | sort | while read -r workflow; do
+          WORKFLOW_NAME="${workflow%.md}"
+          echo -e "  ${YELLOW}$WORKFLOW_NAME${NC} (not installed, use --install to install)"
+        done
+      fi
+    else
+      echo "$WORKFLOWS" | while read -r workflow; do
+        WORKFLOW_NAME="${workflow%.md}"
+        echo -e "  ${YELLOW}$WORKFLOW_NAME${NC}"
+      done
+    fi
+  else
+    echo -e "${YELLOW}Workflow directory not found at $WINDSURF_INSTALL_PATH${NC}"
+    
+    # Check if we have workflows in the repository
+    if [ -d "$SCRIPT_DIR/../workflows" ]; then
+      echo -e "${BLUE}Workflows available in repository (not installed):${NC}"
+      find "$SCRIPT_DIR/../workflows" -name "*.md" -type f -exec basename {} \; | sort | while read -r workflow; do
+        WORKFLOW_NAME="${workflow%.md}"
+        echo -e "  ${YELLOW}$WORKFLOW_NAME${NC} (not installed, use --install to install)"
+      done
+    fi
+  fi
+  
+  exit 0
+}
+
 # Check if help flag is provided
 if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
-  echo -e "${BLUE}Agentic TDD Workflow Helper${NC}"
+  echo -e "${BLUE}Cascade Workflows Helper${NC}"
   echo -e "${YELLOW}Usage:${NC}"
-  echo -e "  ./cascade-tdd.sh <JIRA-TASK-ID>    Generate prompt for a JIRA task"
-  echo -e "  ./cascade-tdd.sh --install|-i      Install this script globally"
-  echo -e "  ./cascade-tdd.sh --uninstall|-u    Uninstall the global script"
-  echo -e "  ./cascade-tdd.sh --help|-h         Show this help message"
+  echo -e "  ./cascade-tdd.sh <JIRA-TASK-ID> [WORKFLOW-NAME]    Generate prompt for a JIRA task using specified workflow (default: agentic-tdd-jira)"
+  echo -e "  ./cascade-tdd.sh --list|-l                         List available workflows"
+  echo -e "  ./cascade-tdd.sh --install|-i                      Install this script globally and all workflows"
+  echo -e "  ./cascade-tdd.sh --uninstall|-u                    Uninstall the global script"
+  echo -e "  ./cascade-tdd.sh --help|-h                         Show this help message"
   exit 0
+fi
+
+# Check if list flag is provided
+if [ "$1" = "--list" ] || [ "$1" = "-l" ]; then
+  list_workflows
 fi
 
 # Get the current repository info
@@ -150,7 +199,8 @@ REPO_NAME=$(basename "$REPO_PATH")
 # Check if a JIRA task ID was provided
 if [ -z "$1" ]; then
   echo -e "${RED}Error: Please provide a JIRA task ID${NC}"
-  echo -e "Usage: ./cascade-tdd.sh <JIRA-TASK-ID>"
+  echo -e "Usage: ./cascade-tdd.sh <JIRA-TASK-ID> [WORKFLOW-NAME]"
+  echo -e "       ./cascade-tdd.sh --list       List available workflows"
   echo -e "       ./cascade-tdd.sh --install    Install globally"
   echo -e "       ./cascade-tdd.sh --uninstall  Uninstall globally"
   echo -e "       ./cascade-tdd.sh --help       Show help"
@@ -158,9 +208,15 @@ if [ -z "$1" ]; then
 fi
 
 JIRA_TASK="$1"
+WORKFLOW_NAME="agentic-tdd-jira"  # Default workflow name
+
+# Check if a specific workflow was provided as the second argument
+if [ ! -z "$2" ]; then
+  WORKFLOW_NAME="$2"
+fi
 
 # Path to the workflow file - use the existing one
-WORKFLOW_FILE="$HOME/.codeium/windsurf/workflows/agentic-tdd-jira.md"
+WORKFLOW_FILE="$HOME/.codeium/windsurf/workflows/${WORKFLOW_NAME}.md"
 
 # Check if the workflow file exists
 if [ ! -f "$WORKFLOW_FILE" ]; then
@@ -168,13 +224,14 @@ if [ ! -f "$WORKFLOW_FILE" ]; then
   echo -e "${BLUE}Checking if we can copy it from the repository...${NC}"
   
   # Try to copy from the repository if available
-  if [ -f "$SCRIPT_DIR/../workflows/agentic-tdd-jira.md" ]; then
+  if [ -f "$SCRIPT_DIR/../workflows/${WORKFLOW_NAME}.md" ]; then
     mkdir -p "$(dirname "$WORKFLOW_FILE")"
-    cp "$SCRIPT_DIR/../workflows/agentic-tdd-jira.md" "$WORKFLOW_FILE"
+    cp "$SCRIPT_DIR/../workflows/${WORKFLOW_NAME}.md" "$WORKFLOW_FILE"
     echo -e "${GREEN}✅ Copied workflow file to $WORKFLOW_FILE${NC}"
   else
-    echo -e "${RED}Error: Workflow file not found at $WORKFLOW_FILE and couldn't find it in the repository${NC}"
+    echo -e "${RED}Error: Workflow '${WORKFLOW_NAME}' not found at $WORKFLOW_FILE and couldn't find it in the repository${NC}"
     echo -e "Please make sure the workflow file exists or install the script globally with --install"
+    echo -e "Use --list to see available workflows"
     exit 1
   fi
 fi
@@ -186,7 +243,7 @@ echo -e "${BLUE}Generating workflow prompt for Cascade...${NC}"
 PROMPT_FILE="/tmp/cascade_tdd_prompt.txt"
 cat > "$PROMPT_FILE" << EOF
 $WORKFLOW_FILE
-RUN FLOW "agentic-tdd-jira" WITH VARIABLES {"jira_task": "$JIRA_TASK", "repository_name": "$REPO_NAME", "repository_path": "$REPO_PATH"}
+RUN FLOW "${WORKFLOW_NAME}" WITH VARIABLES {"jira_task": "$JIRA_TASK", "repository_name": "$REPO_NAME", "repository_path": "$REPO_PATH"}
 EOF
 
 # Display instructions
@@ -216,6 +273,6 @@ else
   echo -e "${YELLOW}⚠️ Could not copy to clipboard. Please copy the prompt manually.${NC}"
 fi
 
-echo -e "${GREEN}✅ Agentic TDD workflow prompt generated!${NC}"
+echo -e "${GREEN}✅ Cascade workflow prompt generated for '${WORKFLOW_NAME}'!${NC}"
 echo -e "${BLUE}You can run this script again from any repository using:${NC}"
-echo -e "${YELLOW} cascade-tdd.sh <JIRA-TASK-ID>${NC}"
+echo -e "${YELLOW} cascade-tdd.sh <JIRA-TASK-ID> [WORKFLOW-NAME]${NC}"
