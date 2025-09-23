@@ -17,6 +17,32 @@ Agentic development is a software engineering approach that integrates AI agents
 - **Learning**: Facilitates knowledge transfer and skill development
 - **Collaboration**: Improves team coordination and communication
 
+## Quick Start: Bootstrap Wiser Windsurf Workflows
+
+The `sync-workflows` workflow will help you bootstrap the agentic development workflows into your project.
+
+### Prerequisites
+- SSH access to WiserSolutions/agentic-development repository
+- Windsurf IDE installed
+
+### Step 1: Bootstrap the sync workflow
+
+From the root of your project, run:
+
+```bash
+# Bootstrap sync-workflows.md (minimal clone)
+git clone --depth 1 git@github.com:WiserSolutions/agentic-development.git temp-sync && \
+mkdir -p .windsurf && \
+cp temp-sync/windsurf/workflows/sync-workflows.md .windsurf/workflows && \
+rm -rf temp-sync
+```
+
+### Step 2: Sync workflows
+
+Run the sync-workflows workflow by typing `/sync-workflows` in cascade.
+
+If you want to run it without having to respond to the prompts, you can edit the `sync-workflows.md` file in `.windsurf/workflows` and set the *Execution Mode* to **Turbo Mode**.
+
 ## Agentic Development Workflows
 
 This repository includes several agentic workflows for different development scenarios:
