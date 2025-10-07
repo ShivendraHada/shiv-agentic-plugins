@@ -32,7 +32,7 @@ From the root of your project, run:
 ```bash
 # Bootstrap sync-workflows.md (minimal clone)
 git clone --depth 1 git@github.com:WiserSolutions/agentic-development.git temp-sync && \
-mkdir -p .windsurf && \
+mkdir -p .windsurf/workflows && \
 cp temp-sync/windsurf/workflows/sync-workflows.md .windsurf/workflows && \
 rm -rf temp-sync
 ```
