@@ -81,7 +81,7 @@ Ask the user for:
 
 ## Step 2: Fetch Stories for All Teams
 // turbo
-For each target project (NGPI, NGRI, NGMAP, IV2, MATCH, ORCH, SPE, EP, DATA, VP):
+For each target project (NGPI, NGRI, NGMAP, IV2, MATCH, ORCH, EXT, SPE, EP, DATA, VP):
 
 1. If sprint is "active", fetch the active sprint for the project
 2. Otherwise, fetch all stories from the specified sprint using JQL: `project=[PROJECT_KEY] and sprint=[SPRINT_ID] and issuetype=Story`
