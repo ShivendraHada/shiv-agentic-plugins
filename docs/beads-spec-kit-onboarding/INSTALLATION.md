@@ -11,15 +11,23 @@ We provide an automated installation script that handles most of the setup:
 ./install-bd-speckit.sh
 ```
 
-The script will:
+The script has two phases:
+
+**Phase 1: Global Installation**
 - ✅ Install bd (Beads) via Homebrew
 - ✅ Install beads-mcp Python package
 - ✅ Install uv (if not present)
 - ✅ Install Spec Kit (Specify CLI)
 - ✅ Configure MCP servers for Claude Code and Windsurf
+
+**Phase 2: Repository Initialization** (runs regardless of whether tools were already installed)
 - ✅ Initialize bd in the repository
 - ✅ Initialize Spec Kit for Claude Code and Windsurf
-- ✅ Create/update CLAUDE.md and AGENTS.md
+- ✅ Create/update CLAUDE.md and AGENTS.md with bd workflow
+- ✅ Update constitution to enforce bd usage (forbids TodoWrite)
+- ✅ Inject bd instructions into all Spec Kit workflow files
+
+**Note**: If you already have tools installed, you can skip/decline the upgrade prompts in Phase 1. The script will still offer to initialize your repository in Phase 2.
 
 ### What You'll Need to Do Manually
 

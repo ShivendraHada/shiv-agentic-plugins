@@ -25,12 +25,14 @@ From the repository root:
 ./install-bd-speckit.sh
 ```
 
-This script will:
-- Install bd (Beads) and beads-mcp
-- Install Spec Kit (Specify CLI)
-- Configure MCP servers for Claude Code and Windsurf
-- Initialize bd and Spec Kit in your repository
-- Create/update CLAUDE.md and AGENTS.md
+This script has two phases:
+- **Phase 1**: Install/upgrade bd, beads-mcp, and Spec Kit (system-wide)
+- **Phase 2**: Initialize bd and Spec Kit in your repository (independent of Phase 1)
+  - Configures constitution to enforce bd usage
+  - Injects bd instructions into all workflow files
+  - Updates CLAUDE.md and AGENTS.md
+
+The repository initialization in Phase 2 runs regardless of whether you skip tool installations in Phase 1.
 
 ### Manual Steps Required
 

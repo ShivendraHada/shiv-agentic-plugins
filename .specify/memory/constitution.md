@@ -55,15 +55,49 @@ obvious and reproducible.
 
 ### IV. Task and Workflow Discipline with bd
 
+**bd (beads) is the single source of truth for ALL task tracking.**
+
 All work is tracked and decomposed into explicit issues and tasks using
 `bd` (beads); AI agents operate through those workflows.
 
+**ABSOLUTE PROHIBITION - NO EXCEPTIONS**:
+- **NEVER use TodoWrite tool** - Any use of TodoWrite is a VIOLATION
+- **NEVER create TODO.md files** - Creating TODO.md is FORBIDDEN
+- **NEVER create TODO lists in markdown** - Task lists, checklists, or any TODO-style lists in ANY markdown file are PROHIBITED
+- **NEVER create task tracking in comments** - No TODO comments, no task lists in code
+- **NEVER use any task tracking except bd** - bd is the ONLY permitted task tracking system
+
+**CRITICAL ENFORCEMENT**:
+- AI agents attempting to create TODO lists or use TodoWrite are in DIRECT VIOLATION of this constitution
+- There are NO circumstances where TODO lists, TodoWrite, or alternative task tracking are acceptable
+- Every task, subtask, work item, or action item MUST be tracked in bd exclusively
+- DO NOT work around this requirement - it is MANDATORY
+
+**Required Workflow**:
 - Every meaningful change has an associated bd issue with clear
   acceptance criteria and priority.
 - Dependencies between tasks and features are modeled using bd
   relationships (e.g., `blocks`, `discovered-from`).
 - AI‑driven changes (via Windsurf, Claude Code, or other agents) MUST
   reference the governing bd issue and keep it in sync with code state.
+- AI agents MUST use bd MCP functions (e.g., `mcp__plugin_beads_beads__*`)
+  or bd CLI commands with `--json` flag.
+- All issue state changes MUST be committed to git with code changes
+  (`.beads/issues.jsonl` is the persistent record).
+
+**Why bd is the Source of Truth**:
+- **Persistent**: Issues survive across AI agent chat sessions
+- **Dependency-aware**: Track blockers and relationships between work items
+- **Git-synced**: Auto-syncs to `.beads/issues.jsonl` for version control
+- **AI-optimized**: JSON output, ready work detection, discovered-from links
+- **Multi-assistant safe**: Multiple team members and AI assistants work without conflicts
+- **Context preservation**: Prevents context loss that occurs with ephemeral TODO lists
+
+**Rationale**: bd provides persistent, dependency-aware, git-synced issue
+tracking that survives across AI agent sessions and prevents context loss.
+Unlike TodoWrite or markdown TODO lists, bd maintains state across sessions,
+enables dependency tracking, and ensures all team members (human and AI) have
+a shared, authoritative view of work status.
 
 ### V. Architecture: Intentional, Evolvable, and Minimal
 

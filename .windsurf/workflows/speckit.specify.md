@@ -10,6 +10,36 @@ handoffs:
     send: true
 ---
 
+---
+**CRITICAL: This project uses bd (beads) for ALL task tracking**
+
+**ABSOLUTE PROHIBITION - NO EXCEPTIONS:**
+- **NEVER use TodoWrite tool** - Any use is a VIOLATION of the constitution
+- **NEVER create TODO.md files** - Creating TODO.md is FORBIDDEN
+- **NEVER create TODO lists in markdown** - Task lists in ANY markdown file are PROHIBITED
+- **NEVER work around this requirement** - There are NO exceptions
+
+**REQUIRED:**
+- **ALWAYS use bd MCP functions** - Use `mcp__plugin_beads_beads__*` functions for all tracking
+- **ALWAYS track ALL tasks in bd** - Every task, subtask, and work item MUST be in bd
+
+See CLAUDE.md and AGENTS.md for complete bd workflow instructions.
+See .specify/memory/constitution.md Section IV for full requirements.
+---
+
+
+---
+**CRITICAL: This project uses bd (beads) for ALL task tracking**
+
+Before proceeding with this workflow:
+- **DO NOT use TodoWrite tool** - Never create, update, or manage todos via TodoWrite
+- **DO use bd MCP functions** - Use `mcp__plugin_beads_beads__*` functions for all tracking
+- **DO NOT create markdown TODOs** - No TODO.md, task lists, or checklists in markdown
+
+See CLAUDE.md and AGENTS.md for complete bd workflow instructions.
+---
+
+
 ## User Input
 
 ```text

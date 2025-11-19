@@ -526,6 +526,216 @@ EOF
     fi
 }
 
+# Update constitution to enforce bd usage
+update_constitution() {
+    print_header "Updating Project Constitution"
+
+    local constitution_file=".specify/memory/constitution.md"
+
+    if [[ ! -f "$constitution_file" ]]; then
+        print_warning "Constitution file not found at $constitution_file"
+        print_info "Run 'specify init' or '/speckit.constitution' to create it"
+        return
+    fi
+
+    # Check if bd enforcement is already present
+    if grep -q "DO NOT use TodoWrite" "$constitution_file" 2>/dev/null; then
+        print_success "Constitution already enforces bd usage"
+        return
+    fi
+
+    print_info "Adding bd enforcement to constitution..."
+
+    # Update Section IV to be more explicit about bd and forbid TodoWrite
+    if grep -q "### IV. Task and Workflow Discipline with bd" "$constitution_file"; then
+        # Use awk to replace Section IV with enhanced version
+        awk '
+        BEGIN { in_section_iv=0; printed_new=0 }
+        /^### IV\. Task and Workflow Discipline with bd/ {
+            in_section_iv=1
+            print "### IV. Task and Workflow Discipline with bd"
+            print ""
+            print "**bd (beads) is the single source of truth for ALL task tracking.**"
+            print ""
+            print "All work is tracked and decomposed into explicit issues and tasks using"
+            print "`bd` (beads); AI agents operate through those workflows."
+            print ""
+            print "**ABSOLUTE PROHIBITION - NO EXCEPTIONS**:"
+            print "- **NEVER use TodoWrite tool** - Any use of TodoWrite is a VIOLATION"
+            print "- **NEVER create TODO.md files** - Creating TODO.md is FORBIDDEN"
+            print "- **NEVER create TODO lists in markdown** - Task lists, checklists, or any TODO-style lists in ANY markdown file are PROHIBITED"
+            print "- **NEVER create task tracking in comments** - No TODO comments, no task lists in code"
+            print "- **NEVER use any task tracking except bd** - bd is the ONLY permitted task tracking system"
+            print ""
+            print "**CRITICAL ENFORCEMENT**:"
+            print "- AI agents attempting to create TODO lists or use TodoWrite are in DIRECT VIOLATION of this constitution"
+            print "- There are NO circumstances where TODO lists, TodoWrite, or alternative task tracking are acceptable"
+            print "- Every task, subtask, work item, or action item MUST be tracked in bd exclusively"
+            print "- DO NOT work around this requirement - it is MANDATORY"
+            print ""
+            print "**Required Workflow**:"
+            print "- Every meaningful change has an associated bd issue with clear"
+            print "  acceptance criteria and priority."
+            print "- Dependencies between tasks and features are modeled using bd"
+            print "  relationships (e.g., `blocks`, `discovered-from`)."
+            print "- AI‑driven changes (via Windsurf, Claude Code, or other agents) MUST"
+            print "  reference the governing bd issue and keep it in sync with code state."
+            print "- AI agents MUST use bd MCP functions (e.g., `mcp__plugin_beads_beads__*`)"
+            print "  or bd CLI commands with `--json` flag."
+            print "- All issue state changes MUST be committed to git with code changes"
+            print "  (`.beads/issues.jsonl` is the persistent record)."
+            print ""
+            print "**Why bd is the Source of Truth**:"
+            print "- **Persistent**: Issues survive across AI agent chat sessions"
+            print "- **Dependency-aware**: Track blockers and relationships between work items"
+            print "- **Git-synced**: Auto-syncs to `.beads/issues.jsonl` for version control"
+            print "- **AI-optimized**: JSON output, ready work detection, discovered-from links"
+            print "- **Multi-assistant safe**: Multiple team members and AI assistants work without conflicts"
+            print "- **Context preservation**: Prevents context loss that occurs with ephemeral TODO lists"
+            print ""
+            print "**Rationale**: bd provides persistent, dependency-aware, git-synced issue"
+            print "tracking that survives across AI agent sessions and prevents context loss."
+            print "Unlike TodoWrite or markdown TODO lists, bd maintains state across sessions,"
+            print "enables dependency tracking, and ensures all team members (human and AI) have"
+            print "a shared, authoritative view of work status."
+            printed_new=1
+            next
+        }
+        /^### V\./ {
+            if (in_section_iv) {
+                in_section_iv=0
+            }
+            print
+            next
+        }
+        {
+            if (!in_section_iv) {
+                print
+            }
+        }
+        ' "$constitution_file" > "${constitution_file}.tmp" && mv "${constitution_file}.tmp" "$constitution_file"
+
+        print_success "Updated constitution Section IV to enforce bd as source of truth"
+    else
+        print_warning "Could not find Section IV in constitution"
+        print_info "Manually add bd enforcement to $constitution_file"
+    fi
+}
+
+# Inject bd instructions into workflow files
+inject_bd_instructions() {
+    print_header "Injecting bd Instructions into Workflow Files"
+
+    # NOTE: This function injects bd enforcement headers into Spec Kit workflow files.
+    # The actual workflow logic (especially speckit.tasks.md) has been updated to:
+    # - Create bd child issues for each task using mcp__plugin_beads_beads__create()
+    # - Link tasks to parent feature/epic using mcp__plugin_beads_beads__dep()
+    # - Reference bd issue IDs in tasks.md instead of using markdown checkboxes
+    # - Generate bd Issue Summary table mapping Task IDs to bd issue IDs
+
+    # Update Claude Code workflow files
+    if [[ -d ".claude/commands" ]]; then
+        local claude_updated=0
+        for file in .claude/commands/speckit.*.md; do
+            [[ -f "$file" ]] || continue
+
+            # Skip if already has bd instructions
+            if grep -q "CRITICAL: This project uses bd" "$file" 2>/dev/null; then
+                continue
+            fi
+
+            # Use awk to insert after frontmatter
+            awk 'BEGIN{count=0; inserted=0}
+            /^---$/{
+                count++;
+                print;
+                if(count==2 && inserted==0) {
+                    print ""
+                    print "---"
+                    print "**CRITICAL: This project uses bd (beads) for ALL task tracking**"
+                    print ""
+                    print "**ABSOLUTE PROHIBITION - NO EXCEPTIONS:**"
+                    print "- **NEVER use TodoWrite tool** - Any use is a VIOLATION of the constitution"
+                    print "- **NEVER create TODO.md files** - Creating TODO.md is FORBIDDEN"
+                    print "- **NEVER create TODO lists in markdown** - Task lists in ANY markdown file are PROHIBITED"
+                    print "- **NEVER work around this requirement** - There are NO exceptions"
+                    print ""
+                    print "**REQUIRED:**"
+                    print "- **ALWAYS use bd MCP functions** - Use `mcp__plugin_beads_beads__*` functions for all tracking"
+                    print "- **ALWAYS track ALL tasks in bd** - Every task, subtask, and work item MUST be in bd"
+                    print ""
+                    print "See CLAUDE.md and AGENTS.md for complete bd workflow instructions."
+                    print "See .specify/memory/constitution.md Section IV for full requirements."
+                    print "---"
+                    print ""
+                    inserted=1
+                }
+                next
+            }
+            {print}' "$file" > "$file.tmp" && mv "$file.tmp" "$file"
+
+            ((claude_updated++))
+        done
+
+        if [[ $claude_updated -gt 0 ]]; then
+            print_success "Updated $claude_updated Claude Code workflow files"
+        else
+            print_info "Claude Code workflow files already have bd instructions"
+        fi
+    fi
+
+    # Update Windsurf workflow files
+    if [[ -d ".windsurf/workflows" ]]; then
+        local windsurf_updated=0
+        for file in .windsurf/workflows/speckit.*.md; do
+            [[ -f "$file" ]] || continue
+
+            # Skip if already has bd instructions
+            if grep -q "CRITICAL: This project uses bd" "$file" 2>/dev/null; then
+                continue
+            fi
+
+            # Use awk to insert after frontmatter
+            awk 'BEGIN{count=0; inserted=0}
+            /^---$/{
+                count++;
+                print;
+                if(count==2 && inserted==0) {
+                    print ""
+                    print "---"
+                    print "**CRITICAL: This project uses bd (beads) for ALL task tracking**"
+                    print ""
+                    print "**ABSOLUTE PROHIBITION - NO EXCEPTIONS:**"
+                    print "- **NEVER use TodoWrite tool** - Any use is a VIOLATION of the constitution"
+                    print "- **NEVER create TODO.md files** - Creating TODO.md is FORBIDDEN"
+                    print "- **NEVER create TODO lists in markdown** - Task lists in ANY markdown file are PROHIBITED"
+                    print "- **NEVER work around this requirement** - There are NO exceptions"
+                    print ""
+                    print "**REQUIRED:**"
+                    print "- **ALWAYS use bd MCP functions** - Use `mcp__plugin_beads_beads__*` functions for all tracking"
+                    print "- **ALWAYS track ALL tasks in bd** - Every task, subtask, and work item MUST be in bd"
+                    print ""
+                    print "See CLAUDE.md and AGENTS.md for complete bd workflow instructions."
+                    print "See .specify/memory/constitution.md Section IV for full requirements."
+                    print "---"
+                    print ""
+                    inserted=1
+                }
+                next
+            }
+            {print}' "$file" > "$file.tmp" && mv "$file.tmp" "$file"
+
+            ((windsurf_updated++))
+        done
+
+        if [[ $windsurf_updated -gt 0 ]]; then
+            print_success "Updated $windsurf_updated Windsurf workflow files"
+        else
+            print_info "Windsurf workflow files already have bd instructions"
+        fi
+    fi
+}
+
 # Verify installation
 verify_installation() {
     print_header "Verifying Installation"
@@ -618,6 +828,13 @@ main() {
     echo "  • beads-mcp - MCP server for AI assistants"
     echo "  • Spec Kit (Specify CLI) - Spec-driven development tool"
     echo ""
+    echo "The script has two phases:"
+    echo "  1. Global installation (tools available system-wide)"
+    echo "  2. Repository initialization (set up THIS repository)"
+    echo ""
+    echo "If you already have tools installed, you can skip upgrades."
+    echo "The script will still offer to initialize THIS repository."
+    echo ""
     echo "Prerequisites:"
     echo "  • macOS"
     echo "  • Homebrew"
@@ -642,14 +859,32 @@ main() {
     configure_windsurf_mcp
 
     # Repository initialization (if in a git repo)
+    # This runs independently of whether tools were installed or skipped above
     if [[ -d ".git" ]]; then
-        echo -e "\n${YELLOW}Initialize bd and Spec Kit in this repository? (y/N)${NC}"
+        print_header "Repository Initialization"
+        echo -e "${YELLOW}Would you like to initialize bd and Spec Kit in THIS repository?${NC}"
+        echo -e "This will:"
+        echo -e "  • Run 'bd init' (creates .beads/ directory)"
+        echo -e "  • Run 'specify init' (creates .specify/ and slash commands)"
+        echo -e "  • Create/update CLAUDE.md and AGENTS.md with bd workflow"
+        echo -e "  • Update constitution to enforce bd usage (no TodoWrite)"
+        echo -e "  • Inject bd instructions into all workflow files"
+        echo -e ""
+        echo -e "${YELLOW}Initialize now? (Y/n)${NC}"
         read -r response
-        if [[ "$response" =~ ^[Yy]$ ]]; then
+        if [[ ! "$response" =~ ^[Nn]$ ]]; then
             init_bd_repo
             init_speckit
             update_claude_md
             update_agents_md
+            update_constitution
+            inject_bd_instructions
+        else
+            print_info "Skipping repository initialization"
+            print_info "To initialize later, run from your repository root:"
+            print_info "  bd init"
+            print_info "  specify init --here --ai claude"
+            print_info "  specify init --here --ai windsurf"
         fi
     else
         print_warning "Not in a git repository - skipping repository initialization"
