@@ -32,7 +32,7 @@ From the root of your project, run:
 ```bash
 # Bootstrap sync-workflows.md (minimal clone)
 git clone --depth 1 git@github.com:WiserSolutions/agentic-development.git temp-sync && \
-mkdir -p .windsurf && \
+mkdir -p .windsurf/workflows && \
 cp temp-sync/windsurf/workflows/sync-workflows.md .windsurf/workflows && \
 rm -rf temp-sync
 ```
@@ -42,8 +42,6 @@ rm -rf temp-sync
 Run the sync-workflows workflow by typing `/sync-workflows` in cascade.
 
 If you want to run it without having to respond to the prompts, you can edit the `sync-workflows.md` file in `.windsurf/workflows` and set the *Execution Mode* to **Turbo Mode**.
-
-
 
 ## Agentic Development Workflows
 
