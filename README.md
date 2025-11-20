@@ -149,6 +149,14 @@ Contributions to improve agentic development workflows are welcome. Please submi
 - Integration with additional tools and services
 
 ## Resources
+
+### Beads + Spec Kit Onboarding
+
+- [Onboarding Deck README](./docs/beads-spec-kit-onboarding/README.md)
+- [Beads + Spec Kit Onboarding Slides](./docs/beads-spec-kit-onboarding/slides.md)
+
+### Additional Documentation
+
 - [Installation Guide](./install.md)
 - [Agentic Development Patterns](./docs/patterns.md)
 - [AI Prompt Engineering Guide](./docs/prompts.md)

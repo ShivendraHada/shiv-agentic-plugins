@@ -1,1 +1,6 @@
+# Ignore generated files
+*.pptx
+*.pdf
+
+# Ignore _org files
 .windsurf/workflows/_org
