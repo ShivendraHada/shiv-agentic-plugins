@@ -854,66 +854,257 @@ inject_bd_instructions() {
 install_bd_workflow_files() {
     print_header "Installing Customized bd Workflow Files"
 
-    # Get the script's directory to find the source workflow files
-    local script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
-    # Check if we have source workflow files to copy
-    local has_source_files=false
-
-    if [[ -f "$script_dir/.claude/commands/speckit.tasks.md" ]] && \
-       [[ -f "$script_dir/.claude/commands/speckit.implement.md" ]]; then
-        has_source_files=true
-    fi
-
-    if [[ "$has_source_files" != "true" ]]; then
-        print_warning "No customized workflow files found in script directory"
-        print_info "Workflow files will use default Spec Kit templates"
-        print_info "You may need to manually copy workflow files with bd integration logic"
-        return 0
-    fi
-
-    print_info "Found customized workflow files with bd integration logic"
+    print_info "Installing workflow files with bd integration logic..."
 
     # Install Claude Code workflow files
     if [[ -d ".claude/commands" ]]; then
-        local claude_installed=0
+        # Write speckit.tasks.md
+        cat > ".claude/commands/speckit.tasks.md" << 'TASKS_WORKFLOW_EOF'
+---
+description: Generate an actionable, dependency-ordered tasks.md for the feature based on available design artifacts.
+---
 
-        # Copy speckit.tasks.md
-        if [[ -f "$script_dir/.claude/commands/speckit.tasks.md" ]]; then
-            cp "$script_dir/.claude/commands/speckit.tasks.md" ".claude/commands/speckit.tasks.md"
-            ((claude_installed++))
-        fi
+---
+**CRITICAL: This project uses bd (beads) for ALL task tracking**
 
-        # Copy speckit.implement.md
-        if [[ -f "$script_dir/.claude/commands/speckit.implement.md" ]]; then
-            cp "$script_dir/.claude/commands/speckit.implement.md" ".claude/commands/speckit.implement.md"
-            ((claude_installed++))
-        fi
+**ABSOLUTE PROHIBITION - NO EXCEPTIONS:**
+- **NEVER use TodoWrite tool** - Any use is a VIOLATION of the constitution
+- **NEVER create TODO.md files** - Creating TODO.md is FORBIDDEN
+- **NEVER create TODO lists in markdown** - Task lists in ANY markdown file are PROHIBITED
+- **NEVER work around this requirement** - There are NO exceptions
 
-        if [[ $claude_installed -gt 0 ]]; then
-            print_success "Installed $claude_installed Claude Code workflow files with bd integration"
-        fi
+**REQUIRED:**
+- **ALWAYS use bd MCP functions** - Use `mcp__plugin_beads_beads__*` functions for all tracking
+- **ALWAYS track ALL tasks in bd** - Every task, subtask, and work item MUST be in bd
+
+See CLAUDE.md and AGENTS.md for complete bd workflow instructions.
+See .specify/memory/constitution.md Section IV for full requirements.
+---
+
+## User Input
+
+```text
+$ARGUMENTS
+```
+
+You **MUST** consider the user input before proceeding (if not empty).
+
+## Outline
+
+1. **Setup**: Run `.specify/scripts/bash/check-prerequisites.sh --json` from repo root and parse FEATURE_DIR and AVAILABLE_DOCS list. All paths must be absolute.
+
+2. **Load design documents**: Read from FEATURE_DIR:
+   - **Required**: plan.md (tech stack, libraries, structure), spec.md (user stories with priorities)
+   - **Optional**: data-model.md (entities), contracts/ (API endpoints), research.md (decisions), quickstart.md (test scenarios)
+
+3. **Execute task generation workflow**:
+   - Load plan.md and extract tech stack, libraries, project structure
+   - Load spec.md and extract user stories with their priorities (P1, P2, P3, etc.)
+   - If data-model.md exists: Extract entities and map to user stories
+   - If contracts/ exists: Map endpoints to user stories
+   - If research.md exists: Extract decisions for setup tasks
+   - **Identify or create parent bd issue**: Use `mcp__plugin_beads_beads__list()` to find the parent feature/epic issue, or prompt user for the issue ID
+   - Generate tasks organized by user story (see Task Generation Rules below)
+   - **Create bd child issues for each task**: Use `mcp__plugin_beads_beads__create()` to create child issues and link them to parent using `mcp__plugin_beads_beads__dep()`
+   - Generate dependency graph showing user story completion order
+   - Validate task completeness (each user story has all needed tasks, independently testable)
+
+4. **Write tasks.md file**: Create the tasks.md file in FEATURE_DIR as a simple reference list:
+   - **REQUIRED**: Actually write the file using the Write tool to `{FEATURE_DIR}/tasks.md`
+   - Feature name and parent bd issue at the top
+   - Simple hierarchical list of bd issues organized by phase:
+     ```markdown
+     ## Phase 1: Setup
+     - **bd-102**: Create project structure per implementation plan
+     - **bd-103**: Initialize dependencies (blocks: bd-102)
+     ```
+   - Each line is just: `- **bd-XXX**: Brief description (blockers if any)`
+   - No Task IDs (T001, T002) needed - bd issue IDs are the task IDs
+   - No checkboxes - tasks.md is just a reference, bd issues hold the real state
+   - Include footer with "Working with These Tasks" instructions
+
+5. **Report**: Output path to generated tasks.md and summary:
+   - Parent bd issue ID and title
+   - Total child issues created
+   - **Ready work**: Show which bd issues are ready using `mcp__plugin_beads_beads__ready()`
+   - Next steps: "Run `/speckit.implement` to start working on ready tasks"
+
+## Task Generation Rules
+
+**CRITICAL**: Tasks MUST be organized by user story to enable independent implementation and testing.
+
+**CRITICAL**: All tasks MUST be created as bd child issues linked to the parent feature/epic.
+
+### bd Issue Creation (REQUIRED)
+
+**Before generating tasks.md**:
+
+1. **Identify parent issue**: Ask user for the parent bd issue ID or find it using `mcp__plugin_beads_beads__list()`
+2. **For each task**: Create a bd child issue using `mcp__plugin_beads_beads__create()`:
+   - `title`: Task description
+   - `issue_type`: "task"
+   - `priority`: Based on phase (Setup=1, Foundational=1, User Stories=2, Polish=3)
+   - `description`: Include file path, technical details, and acceptance criteria
+3. **Link to parent**: Use `mcp__plugin_beads_beads__dep()` with `dep_type="parent-child"`
+4. **Create dependencies between tasks**: Use `mcp__plugin_beads_beads__dep()` with `dep_type="blocks"`
+
+### tasks.md Format (REQUIRED)
+
+tasks.md is a **simple reference list** pointing to bd issues. The real task details, status, and dependencies live in bd.
+
+**Format**: One line per bd issue:
+```text
+- **bd-XXX**: Brief description (blockers: bd-YYY if any)
+```
+
+**What NOT to include**:
+- ❌ NO checkboxes `- [ ]` - bd tracks status, not markdown
+- ❌ NO Task IDs like T001, T002 - bd issue IDs are the task IDs
+- ❌ NO status indicators - use `bd ready` to see status
+
+### Phase Structure
+
+- **Phase 1**: Setup (project initialization) - `priority=1`
+- **Phase 2**: Foundational (blocking prerequisites) - `priority=1`
+- **Phase 3+**: User Stories in priority order - `priority=2`
+- **Final Phase**: Polish & Cross-Cutting - `priority=3`
+
+### tasks.md Footer
+
+At the end of tasks.md, include usage instructions:
+
+```markdown
+---
+
+## Working with These Tasks
+
+All tasks are tracked in bd (beads). The list above is just a reference.
+
+**Check what's ready to work on:**
+```bash
+bd ready --json
+```
+
+**View task details:**
+```bash
+bd show bd-XXX
+```
+
+**Claim a task:**
+```bash
+bd update bd-XXX --status in_progress
+```
+
+**Complete a task:**
+```bash
+bd close bd-XXX --reason "Completed"
+```
+
+**Or use `/speckit.implement` to have AI implement tasks automatically.**
+```
+TASKS_WORKFLOW_EOF
+
+        # Write speckit.implement.md
+        cat > ".claude/commands/speckit.implement.md" << 'IMPLEMENT_WORKFLOW_EOF'
+---
+description: Execute the implementation plan by processing and executing all tasks defined in tasks.md
+---
+
+---
+**CRITICAL: This project uses bd (beads) for ALL task tracking**
+
+**ABSOLUTE PROHIBITION - NO EXCEPTIONS:**
+- **NEVER use TodoWrite tool** - Any use is a VIOLATION of the constitution
+- **NEVER create TODO.md files** - Creating TODO.md is FORBIDDEN
+- **NEVER create TODO lists in markdown** - Task lists in ANY markdown file are PROHIBITED
+- **NEVER work around this requirement** - There are NO exceptions
+
+**REQUIRED:**
+- **ALWAYS use bd MCP functions** - Use `mcp__plugin_beads_beads__*` functions for all tracking
+- **ALWAYS track ALL tasks in bd** - Every task, subtask, and work item MUST be in bd
+
+See CLAUDE.md and AGENTS.md for complete bd workflow instructions.
+See .specify/memory/constitution.md Section IV for full requirements.
+---
+
+## User Input
+
+```text
+$ARGUMENTS
+```
+
+You **MUST** consider the user input before proceeding (if not empty).
+
+## Outline
+
+1. Run `.specify/scripts/bash/check-prerequisites.sh --json --require-tasks --include-tasks` from repo root and parse FEATURE_DIR and AVAILABLE_DOCS list.
+
+2. **Check checklists status** (if FEATURE_DIR/checklists/ exists):
+   - Scan all checklist files and count completed vs incomplete items
+   - If any incomplete, ask user if they want to proceed anyway
+
+3. Load and analyze the implementation context:
+   - **REQUIRED**: Read tasks.md to get the list of bd issue IDs organized by phase
+   - **REQUIRED**: Extract all bd issue IDs from tasks.md (e.g., bd-102, bd-103, bd-112)
+   - **REQUIRED**: Use `mcp__plugin_beads_beads__ready()` to find which bd issues are ready to work on
+   - **REQUIRED**: Read plan.md for tech stack, architecture, and file structure
+   - **IF EXISTS**: Read data-model.md, contracts/, research.md, quickstart.md
+
+4. **Project Setup Verification**:
+   - Create/verify ignore files based on actual project setup (.gitignore, .dockerignore, etc.)
+
+5. Execute implementation using bd workflow:
+   - **Get ready work**: Use `mcp__plugin_beads_beads__ready()` to get list of bd issues ready to work on
+   - **Phase-by-phase execution**: Work through phases in order (Setup → Foundational → User Stories → Polish)
+   - **For each ready bd issue**:
+     1. Use `mcp__plugin_beads_beads__show(issue_id)` to get full task details
+     2. Claim the task: `mcp__plugin_beads_beads__update(issue_id, status="in_progress")`
+     3. Implement the task based on its description and acceptance criteria
+     4. When complete: `mcp__plugin_beads_beads__close(issue_id, reason="Completed")`
+   - **Respect dependencies**: Only work on tasks that show up in `ready()` (no blockers)
+
+6. Implementation execution workflow:
+   - **Continuous loop**:
+     1. Call `mcp__plugin_beads_beads__ready()` to get next ready tasks
+     2. If no ready tasks and uncompleted tasks exist, report blockers and wait
+     3. If no uncompleted tasks, implementation is complete
+   - **For each ready task**:
+     1. Show task details: `mcp__plugin_beads_beads__show(issue_id)`
+     2. Claim task: `mcp__plugin_beads_beads__update(issue_id, status="in_progress")`
+     3. Implement based on task description, file path, and acceptance criteria
+     4. Complete task: `mcp__plugin_beads_beads__close(issue_id, reason="Completed")`
+   - **Error handling**:
+     - If implementation fails, keep task as `in_progress` and report error
+     - Create new bd issues for discovered work using `mcp__plugin_beads_beads__create()`
+     - Link discovered issues to parent using `mcp__plugin_beads_beads__dep()`
+
+7. Progress tracking:
+   - Report after each task: "Completed bd-XXX: [task title]"
+   - Show remaining tasks: Use `mcp__plugin_beads_beads__list(status="open")`
+   - Show blocked tasks: Use `mcp__plugin_beads_beads__blocked()`
+   - **IMPORTANT**: DO NOT update tasks.md file - bd holds the real state
+
+8. Completion validation:
+   - Use `mcp__plugin_beads_beads__list()` to verify all issues are closed
+   - Check that implemented features match the original specification
+   - Report final status with summary: total tasks, completed, time taken
+
+Note: This command reads bd issue IDs from tasks.md and works through them using bd MCP functions. If tasks.md doesn't exist or bd issues aren't created, run `/speckit.tasks` first.
+IMPLEMENT_WORKFLOW_EOF
+
+        print_success "Installed Claude Code workflow files with bd integration"
     fi
 
-    # Install Windsurf workflow files
+    # Install Windsurf workflow files (same content, different location)
     if [[ -d ".windsurf/workflows" ]]; then
-        local windsurf_installed=0
-
-        # Copy speckit.tasks.md
-        if [[ -f "$script_dir/.windsurf/workflows/speckit.tasks.md" ]]; then
-            cp "$script_dir/.windsurf/workflows/speckit.tasks.md" ".windsurf/workflows/speckit.tasks.md"
-            ((windsurf_installed++))
+        # Copy the same content to Windsurf location
+        if [[ -f ".claude/commands/speckit.tasks.md" ]]; then
+            cp ".claude/commands/speckit.tasks.md" ".windsurf/workflows/speckit.tasks.md"
         fi
-
-        # Copy speckit.implement.md
-        if [[ -f "$script_dir/.windsurf/workflows/speckit.implement.md" ]]; then
-            cp "$script_dir/.windsurf/workflows/speckit.implement.md" ".windsurf/workflows/speckit.implement.md"
-            ((windsurf_installed++))
+        if [[ -f ".claude/commands/speckit.implement.md" ]]; then
+            cp ".claude/commands/speckit.implement.md" ".windsurf/workflows/speckit.implement.md"
         fi
-
-        if [[ $windsurf_installed -gt 0 ]]; then
-            print_success "Installed $windsurf_installed Windsurf workflow files with bd integration"
-        fi
+        print_success "Installed Windsurf workflow files with bd integration"
     fi
 
     print_info "Workflow files now include:"
