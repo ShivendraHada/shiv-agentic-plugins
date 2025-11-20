@@ -526,100 +526,214 @@ EOF
     fi
 }
 
-# Update constitution to enforce bd usage
+# Update constitution to enforce bd usage and TDD approach
 update_constitution() {
     print_header "Updating Project Constitution"
 
     local constitution_file=".specify/memory/constitution.md"
 
-    if [[ ! -f "$constitution_file" ]]; then
-        print_warning "Constitution file not found at $constitution_file"
-        print_info "Run 'specify init' or '/speckit.constitution' to create it"
+    # Create directory if needed
+    mkdir -p "$(dirname "$constitution_file")"
+
+    # Check if constitution already has full bd enforcement
+    if [[ -f "$constitution_file" ]] && grep -q "ABSOLUTE PROHIBITION - NO EXCEPTIONS" "$constitution_file" 2>/dev/null; then
+        print_success "Constitution already has complete bd enforcement"
         return
     fi
 
-    # Check if bd enforcement is already present
-    if grep -q "DO NOT use TodoWrite" "$constitution_file" 2>/dev/null; then
-        print_success "Constitution already enforces bd usage"
-        return
+    print_info "Installing complete constitution with bd enforcement and TDD approach..."
+
+    # Backup existing constitution if present
+    if [[ -f "$constitution_file" ]]; then
+        cp "$constitution_file" "${constitution_file}.backup"
+        print_info "Backed up existing constitution to ${constitution_file}.backup"
     fi
 
-    print_info "Adding bd enforcement to constitution..."
+    # Write complete constitution with all sections
+    cat > "$constitution_file" << 'CONSTITUTION_EOF'
+<!--
+Sync Impact Report
+- Version change: 0.0.0 → 1.0.0
+- Modified principles: initialized from template (no prior concrete principles)
+- Added sections: Core Principles, Additional Constraints & Standards, Development Workflow & Quality Gates, Governance
+- Removed sections: None (template placeholders fully materialized)
+- Templates reviewed (no content changes required):
+  - ✅ .specify/templates/plan-template.md
+  - ✅ .specify/templates/spec-template.md
+  - ✅ .specify/templates/tasks-template.md
+  - ✅ .specify/templates/checklist-template.md
+  - ✅ .specify/templates/agent-file-template.md
+- Deferred TODOs: None (all placeholders resolved for this version)
+-->
 
-    # Update Section IV to be more explicit about bd and forbid TodoWrite
-    if grep -q "### IV. Task and Workflow Discipline with bd" "$constitution_file"; then
-        # Use awk to replace Section IV with enhanced version
-        awk '
-        BEGIN { in_section_iv=0; printed_new=0 }
-        /^### IV\. Task and Workflow Discipline with bd/ {
-            in_section_iv=1
-            print "### IV. Task and Workflow Discipline with bd"
-            print ""
-            print "**bd (beads) is the single source of truth for ALL task tracking.**"
-            print ""
-            print "All work is tracked and decomposed into explicit issues and tasks using"
-            print "`bd` (beads); AI agents operate through those workflows."
-            print ""
-            print "**ABSOLUTE PROHIBITION - NO EXCEPTIONS**:"
-            print "- **NEVER use TodoWrite tool** - Any use of TodoWrite is a VIOLATION"
-            print "- **NEVER create TODO.md files** - Creating TODO.md is FORBIDDEN"
-            print "- **NEVER create TODO lists in markdown** - Task lists, checklists, or any TODO-style lists in ANY markdown file are PROHIBITED"
-            print "- **NEVER create task tracking in comments** - No TODO comments, no task lists in code"
-            print "- **NEVER use any task tracking except bd** - bd is the ONLY permitted task tracking system"
-            print ""
-            print "**CRITICAL ENFORCEMENT**:"
-            print "- AI agents attempting to create TODO lists or use TodoWrite are in DIRECT VIOLATION of this constitution"
-            print "- There are NO circumstances where TODO lists, TodoWrite, or alternative task tracking are acceptable"
-            print "- Every task, subtask, work item, or action item MUST be tracked in bd exclusively"
-            print "- DO NOT work around this requirement - it is MANDATORY"
-            print ""
-            print "**Required Workflow**:"
-            print "- Every meaningful change has an associated bd issue with clear"
-            print "  acceptance criteria and priority."
-            print "- Dependencies between tasks and features are modeled using bd"
-            print "  relationships (e.g., `blocks`, `discovered-from`)."
-            print "- AI‑driven changes (via Windsurf, Claude Code, or other agents) MUST"
-            print "  reference the governing bd issue and keep it in sync with code state."
-            print "- AI agents MUST use bd MCP functions (e.g., `mcp__plugin_beads_beads__*`)"
-            print "  or bd CLI commands with `--json` flag."
-            print "- All issue state changes MUST be committed to git with code changes"
-            print "  (`.beads/issues.jsonl` is the persistent record)."
-            print ""
-            print "**Why bd is the Source of Truth**:"
-            print "- **Persistent**: Issues survive across AI agent chat sessions"
-            print "- **Dependency-aware**: Track blockers and relationships between work items"
-            print "- **Git-synced**: Auto-syncs to `.beads/issues.jsonl` for version control"
-            print "- **AI-optimized**: JSON output, ready work detection, discovered-from links"
-            print "- **Multi-assistant safe**: Multiple team members and AI assistants work without conflicts"
-            print "- **Context preservation**: Prevents context loss that occurs with ephemeral TODO lists"
-            print ""
-            print "**Rationale**: bd provides persistent, dependency-aware, git-synced issue"
-            print "tracking that survives across AI agent sessions and prevents context loss."
-            print "Unlike TodoWrite or markdown TODO lists, bd maintains state across sessions,"
-            print "enables dependency tracking, and ensures all team members (human and AI) have"
-            print "a shared, authoritative view of work status."
-            printed_new=1
-            next
-        }
-        /^### V\./ {
-            if (in_section_iv) {
-                in_section_iv=0
-            }
-            print
-            next
-        }
-        {
-            if (!in_section_iv) {
-                print
-            }
-        }
-        ' "$constitution_file" > "${constitution_file}.tmp" && mv "${constitution_file}.tmp" "$constitution_file"
+# Project Constitution
 
-        print_success "Updated constitution Section IV to enforce bd as source of truth"
-    else
-        print_warning "Could not find Section IV in constitution"
-        print_info "Manually add bd enforcement to $constitution_file"
-    fi
+## Core Principles
+
+### I. Spec‑Driven, Outcome‑First
+
+All significant work starts from an explicit specification and clear
+outcome metrics rather than ad‑hoc implementation.
+
+- Every feature has a written spec and plan generated via Spec Kit
+  (`/speckit.specify`, `/speckit.plan`, `/speckit.tasks`).
+- Specs focus on user value, measurable success criteria, and constraints
+  before selecting technologies.
+- Implementation follows the spec and plan; deviations MUST be captured
+  as explicit updates to those artifacts.
+
+### II. Safety, Security, and Data Integrity by Default
+
+Security and data integrity constraints are treated as first‑class
+requirements, not afterthoughts.
+
+- All changes are reviewed for injection risks (SQL, command, template),
+  XSS, CSRF, and credential leakage.
+- Input validation, output encoding, and least‑privilege access are
+  mandatory in all layers.
+- Data‑affecting changes MUST define recovery/rollback expectations and
+  be testable in non‑production environments.
+
+### III. Test‑First, Observable, and Reproducible
+
+Work is driven by tests and observability signals that make failures
+obvious and reproducible.
+
+- For non‑trivial changes, tests or explicit verification steps are
+  defined before implementation.
+- Each feature aims to include fast, automated checks (unit, contract,
+  or integration) appropriate to its risk.
+- Instrumentation (logging, metrics, or traces) MUST be sufficient to
+  diagnose production issues without re‑deploying debug builds.
+
+### IV. Task and Workflow Discipline with bd
+
+**bd (beads) is the single source of truth for ALL task tracking.**
+
+All work is tracked and decomposed into explicit issues and tasks using
+`bd` (beads); AI agents operate through those workflows.
+
+**ABSOLUTE PROHIBITION - NO EXCEPTIONS**:
+- **NEVER use TodoWrite tool** - Any use of TodoWrite is a VIOLATION
+- **NEVER create TODO.md files** - Creating TODO.md is FORBIDDEN
+- **NEVER create TODO lists in markdown** - Task lists, checklists, or any TODO-style lists in ANY markdown file are PROHIBITED
+- **NEVER create task tracking in comments** - No TODO comments, no task lists in code
+- **NEVER use any task tracking except bd** - bd is the ONLY permitted task tracking system
+
+**CRITICAL ENFORCEMENT**:
+- AI agents attempting to create TODO lists or use TodoWrite are in DIRECT VIOLATION of this constitution
+- There are NO circumstances where TODO lists, TodoWrite, or alternative task tracking are acceptable
+- Every task, subtask, work item, or action item MUST be tracked in bd exclusively
+- DO NOT work around this requirement - it is MANDATORY
+
+**Required Workflow**:
+- Every meaningful change has an associated bd issue with clear
+  acceptance criteria and priority.
+- Dependencies between tasks and features are modeled using bd
+  relationships (e.g., `blocks`, `discovered-from`).
+- AI‑driven changes (via Windsurf, Claude Code, or other agents) MUST
+  reference the governing bd issue and keep it in sync with code state.
+- AI agents MUST use bd MCP functions (e.g., `mcp__plugin_beads_beads__*`)
+  or bd CLI commands with `--json` flag.
+- All issue state changes MUST be committed to git with code changes
+  (`.beads/issues.jsonl` is the persistent record).
+
+**Why bd is the Source of Truth**:
+- **Persistent**: Issues survive across AI agent chat sessions
+- **Dependency-aware**: Track blockers and relationships between work items
+- **Git-synced**: Auto-syncs to `.beads/issues.jsonl` for version control
+- **AI-optimized**: JSON output, ready work detection, discovered-from links
+- **Multi-assistant safe**: Multiple team members and AI assistants work without conflicts
+- **Context preservation**: Prevents context loss that occurs with ephemeral TODO lists
+
+**Rationale**: bd provides persistent, dependency-aware, git-synced issue
+tracking that survives across AI agent sessions and prevents context loss.
+Unlike TodoWrite or markdown TODO lists, bd maintains state across sessions,
+enables dependency tracking, and ensures all team members (human and AI) have
+a shared, authoritative view of work status.
+
+### V. Architecture: Intentional, Evolvable, and Minimal
+
+Architecture follows domain needs and is kept as simple as possible
+while supporting evolution.
+
+- Prefer clear boundaries (DDD‑inspired, CQRS/event‑driven where
+  justified) but avoid speculative abstraction.
+- Cross‑service and cross‑boundary contracts MUST be explicit
+  (interfaces, events, or APIs) and versioned deliberately.
+- Complexity (frameworks, patterns, or infrastructure) MUST be
+  justified in specs and plans, especially when it increases cognitive
+  load for the team.
+
+## Additional Constraints & Standards
+
+This section captures global constraints that apply across all specs,
+plans, and implementations.
+
+- **Technology Baseline**: Modern, supported runtimes and libraries are
+  required; end‑of‑life or unpatched dependencies MUST NOT be
+  introduced.
+- **Performance & Reliability**: Each feature spec defines success
+  metrics where relevant (e.g., latency, throughput, error budgets).
+  Changes MUST not violate established SLOs without an explicit, agreed
+  trade‑off captured in the spec.
+- **Security & Compliance**: All code paths that touch authentication,
+  authorization, or sensitive data MUST include tests or explicit
+  validation steps. Secrets must never be hard‑coded; configuration is
+  provided via secure configuration mechanisms.
+- **AI Agent Usage**: AI agents are assistants, not authorities. All
+  generated code and configuration MUST be reviewed and validated
+  against this constitution, project specs, and security constraints.
+
+## Development Workflow & Quality Gates
+
+The development workflow is driven by Spec Kit and bd.
+
+- **Spec First**: `/speckit.specify` produces the feature spec; it MUST
+  be understandable by humans and traceable to user or business value.
+- **Plan Second**: `/speckit.plan` defines architecture, technology
+  choices, and constraints; it MUST pass the Constitution Check section
+  of the plan template.
+- **Tasks Third**: `/speckit.tasks` generates an ordered task breakdown;
+  tasks MUST be small, testable, and mapped to bd issues as
+  appropriate.
+- **Implementation**: `/speckit.implement` or equivalent manual work
+  MUST follow the task breakdown and keep documentation in sync.
+- **Quality Gates**: Before merging, feature work MUST have:
+  - Updated specs/plans/tasks reflecting what was actually built.
+  - Appropriate tests or documented verification steps.
+  - bd issues moved to an appropriate terminal state with notes.
+
+## Governance
+
+This constitution governs how work is specified, planned, implemented,
+and reviewed in this repository.
+
+- This document supersedes informal conventions; conflicts are resolved
+  in favor of the constitution.
+- Amendments MUST be made via pull requests linked to bd issues that
+  explain the motivation and impact.
+- Version numbers follow semantic versioning:
+  - **MAJOR**: Backwards‑incompatible changes to principles or
+    governance.
+  - **MINOR**: New principles or substantial expansions.
+  - **PATCH**: Clarifications and non‑semantic edits.
+- Every amendment MUST update the Sync Impact Report at the top of this
+  file and review related templates for alignment.
+- Compliance with this constitution is a required review gate for all
+  changes; reviewers and AI agents should call out violations explicitly
+  in review notes.
+
+**Version**: 1.0.0 | **Ratified**: $(date +%Y-%m-%d) | **Last Amended**: $(date +%Y-%m-%d)
+CONSTITUTION_EOF
+
+    print_success "Installed complete constitution with:"
+    print_success "  • Spec-driven development (Section I)"
+    print_success "  • Security by default (Section II)"
+    print_success "  • Test-first/TDD approach (Section III)"
+    print_success "  • bd enforcement with absolute prohibition (Section IV)"
+    print_success "  • Architecture principles (Section V)"
+    print_success "  • Quality gates and governance"
 }
 
 # Inject bd instructions into workflow files
