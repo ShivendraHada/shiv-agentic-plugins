@@ -850,6 +850,77 @@ inject_bd_instructions() {
     fi
 }
 
+# Install customized workflow files with bd integration
+install_bd_workflow_files() {
+    print_header "Installing Customized bd Workflow Files"
+
+    # Get the script's directory to find the source workflow files
+    local script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+    # Check if we have source workflow files to copy
+    local has_source_files=false
+
+    if [[ -f "$script_dir/.claude/commands/speckit.tasks.md" ]] && \
+       [[ -f "$script_dir/.claude/commands/speckit.implement.md" ]]; then
+        has_source_files=true
+    fi
+
+    if [[ "$has_source_files" != "true" ]]; then
+        print_warning "No customized workflow files found in script directory"
+        print_info "Workflow files will use default Spec Kit templates"
+        print_info "You may need to manually copy workflow files with bd integration logic"
+        return 0
+    fi
+
+    print_info "Found customized workflow files with bd integration logic"
+
+    # Install Claude Code workflow files
+    if [[ -d ".claude/commands" ]]; then
+        local claude_installed=0
+
+        # Copy speckit.tasks.md
+        if [[ -f "$script_dir/.claude/commands/speckit.tasks.md" ]]; then
+            cp "$script_dir/.claude/commands/speckit.tasks.md" ".claude/commands/speckit.tasks.md"
+            ((claude_installed++))
+        fi
+
+        # Copy speckit.implement.md
+        if [[ -f "$script_dir/.claude/commands/speckit.implement.md" ]]; then
+            cp "$script_dir/.claude/commands/speckit.implement.md" ".claude/commands/speckit.implement.md"
+            ((claude_installed++))
+        fi
+
+        if [[ $claude_installed -gt 0 ]]; then
+            print_success "Installed $claude_installed Claude Code workflow files with bd integration"
+        fi
+    fi
+
+    # Install Windsurf workflow files
+    if [[ -d ".windsurf/workflows" ]]; then
+        local windsurf_installed=0
+
+        # Copy speckit.tasks.md
+        if [[ -f "$script_dir/.windsurf/workflows/speckit.tasks.md" ]]; then
+            cp "$script_dir/.windsurf/workflows/speckit.tasks.md" ".windsurf/workflows/speckit.tasks.md"
+            ((windsurf_installed++))
+        fi
+
+        # Copy speckit.implement.md
+        if [[ -f "$script_dir/.windsurf/workflows/speckit.implement.md" ]]; then
+            cp "$script_dir/.windsurf/workflows/speckit.implement.md" ".windsurf/workflows/speckit.implement.md"
+            ((windsurf_installed++))
+        fi
+
+        if [[ $windsurf_installed -gt 0 ]]; then
+            print_success "Installed $windsurf_installed Windsurf workflow files with bd integration"
+        fi
+    fi
+
+    print_info "Workflow files now include:"
+    print_info "  • speckit.tasks.md: Creates bd child issues, writes tasks.md with bd issue references"
+    print_info "  • speckit.implement.md: Uses bd MCP functions to track and implement tasks"
+}
+
 # Verify installation
 verify_installation() {
     print_header "Verifying Installation"
@@ -993,6 +1064,7 @@ main() {
             update_agents_md
             update_constitution
             inject_bd_instructions
+            install_bd_workflow_files
         else
             print_info "Skipping repository initialization"
             print_info "To initialize later, run from your repository root:"
