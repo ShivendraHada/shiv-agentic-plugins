@@ -1224,20 +1224,28 @@ main() {
     check_homebrew
     check_python
 
-    # Install core components
-    install_bd
-    install_beads_mcp
-    check_uv
-    install_speckit
+    # Phase 1: Install core components
+    print_header "Phase 1: Global Tool Installation"
+    echo -e "${YELLOW}Do you want to install/upgrade global tools (bd, beads-mcp, specify)? (Y/n)${NC}"
+    read -r response
+    if [[ ! "$response" =~ ^[Nn]$ ]]; then
+        install_bd
+        install_beads_mcp
+        check_uv
+        install_speckit
 
-    # Configure MCP servers
-    configure_claude_mcp
-    configure_windsurf_mcp
+        # Configure MCP servers
+        configure_claude_mcp
+        configure_windsurf_mcp
+    else
+        print_info "Skipping global tool installation"
+        print_info "Note: bd, beads-mcp, and specify must be installed for full functionality"
+    fi
 
-    # Repository initialization (if in a git repo)
-    # This runs independently of whether tools were installed or skipped above
+    # Phase 2: Repository initialization (if in a git repo)
+    # This runs independently of whether Phase 1 was skipped
     if [[ -d ".git" ]]; then
-        print_header "Repository Initialization"
+        print_header "Phase 2: Repository Initialization"
         echo -e "${YELLOW}Would you like to initialize bd and Spec Kit in THIS repository?${NC}"
         echo -e "This will:"
         echo -e "  • Run 'bd init' (creates .beads/ directory)"
