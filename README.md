@@ -47,7 +47,28 @@ If you want to run it without having to respond to the prompts, you can edit the
 
 This repository includes several agentic workflows for different development scenarios:
 
-### 1. Agentic TDD Workflow
+### 1. Epic and Story Workflows ⭐ **NEW**
+
+Comprehensive workflows for creating high-quality Epics and User Stories following the Wiser Solutions standard.
+
+#### Key Features:
+- **Epic Creation**: SMART-compliant epics with business justification
+- **User Story Creation**: INVEST-compliant stories with Gherkin acceptance criteria
+- **Technical Enablement Stories**: Specialized format for technical work
+- **Quality Tracking**: Individual story analysis and team performance KPIs
+- **Standards Compliance**: Implements Wiser Solutions Epic and Story Standard
+
+#### Quick Start:
+```
+/create-epic          # Create strategic epics
+/create-story         # Create user stories
+/story-invest-score   # Analyze story quality
+```
+
+📖 **[Complete Epic & Story Documentation](./EPIC_STORY_WORKFLOWS.md)**  
+📋 **[Quick Reference Guide](./README_WORKFLOWS.md)**
+
+### 2. Agentic TDD Workflow
 
 A structured approach combining Test-Driven Development with AI assistance and human validation checkpoints.
 
