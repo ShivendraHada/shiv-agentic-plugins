@@ -17,15 +17,56 @@ Agentic development is a software engineering approach that integrates AI agents
 - **Learning**: Facilitates knowledge transfer and skill development
 - **Collaboration**: Improves team coordination and communication
 
-## Quick Start: Bootstrap Wiser Windsurf Workflows
+## Quick Start
+
+Choose your preferred AI assistant:
+
+### Option A: Claude Code (Recommended)
+
+Install slash commands in any project with a single command:
+
+```bash
+# Quick install
+curl -fsSL https://raw.githubusercontent.com/WiserSolutions/agentic-development/main/install-claude-commands.sh | bash
+```
+
+Or clone and run manually:
+```bash
+# Clone repository
+git clone --depth 1 git@github.com:WiserSolutions/agentic-development.git temp-commands
+
+# Create commands directory and copy
+mkdir -p .claude/commands
+cp temp-commands/claude-commands/*.md .claude/commands/
+
+# Cleanup
+rm -rf temp-commands
+```
+
+After installation, use `/` in Claude Code to see all available commands:
+
+| Command | Description |
+|---------|-------------|
+| `/create-epic` | Create SMART-compliant epics |
+| `/create-story` | Create INVEST-compliant user stories |
+| `/create-technical-enablement-story` | Create technical enablement stories |
+| `/story-invest-score` | Analyze story quality against INVEST |
+| `/story-quality-kpis` | Track team performance metrics |
+| `/tdd-workflow` | Test-Driven Development with AI assistance |
+| `/notes-to-work-item` | Transform notes into epics/stories |
+| `/auto-groom` | Auto-groom sprint stories |
+
+📖 **[Claude Code Commands Documentation](./claude-commands/README.md)**
+
+### Option B: Windsurf IDE
 
 The `sync-workflows` workflow will help you bootstrap the agentic development workflows into your project.
 
-### Prerequisites
+#### Prerequisites
 - SSH access to WiserSolutions/agentic-development repository
 - Windsurf IDE installed
 
-### Step 1: Bootstrap the sync workflow
+#### Step 1: Bootstrap the sync workflow
 
 From the root of your project, run:
 
@@ -37,7 +78,7 @@ cp temp-sync/windsurf/workflows/sync-workflows.md .windsurf/workflows && \
 rm -rf temp-sync
 ```
 
-### Step 2: Sync workflows
+#### Step 2: Sync workflows
 
 Run the sync-workflows workflow by typing `/sync-workflows` in cascade.
 

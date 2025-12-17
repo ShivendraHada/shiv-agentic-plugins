@@ -1,6 +1,6 @@
-# Windsurf Workflows for Epics and Stories - Developer Guide
+# Epic and Story Workflows - Developer Guide
 
-This comprehensive guide covers installing and using the Windsurf workflows for Epic and Story management, including backlog management using the Wiser Solutions standard.
+This comprehensive guide covers installing and using the Epic and Story management workflows with **Claude Code** or **Windsurf IDE**, including backlog management using the Wiser Solutions standard.
 
 ## Table of Contents
 1. [Quick Start](#quick-start)
@@ -18,6 +18,18 @@ This comprehensive guide covers installing and using the Windsurf workflows for 
 
 ### TL;DR - Get Started in 5 Minutes
 
+#### Using Claude Code (Recommended)
+1. **Install commands**:
+   ```bash
+   curl -fsSL https://raw.githubusercontent.com/WiserSolutions/agentic-development/main/install-claude-commands.sh | bash
+   ```
+2. **Type `/` in Claude Code** to see available commands
+3. **Create an Epic**: `/create-epic` → Follow SMART criteria prompts
+4. **Create Stories**: `/create-story` → Follow INVEST principles
+5. **For Technical Work**: `/create-technical-enablement-story`
+6. **Check Quality**: `/story-invest-score [story-id]`
+
+#### Using Windsurf IDE
 1. **Open Windsurf IDE** in this repository
 2. **Type `/` in chat** to see available workflows
 3. **Create an Epic**: `/create-epic` → Follow SMART criteria prompts
@@ -26,20 +38,74 @@ This comprehensive guide covers installing and using the Windsurf workflows for 
 6. **Check Quality**: `/story-invest-score [story-id]`
 
 ### Available Commands
-- `/create-epic` - Create SMART-compliant Epics
-- `/create-story` - Create INVEST-compliant User Stories  
-- `/create-technical-enablement-story` - Create technical work stories
-- `/story-invest-score` - Analyze individual story quality
-- `/story-quality-kpis` - Track team performance metrics
+| Command | Description |
+|---------|-------------|
+| `/create-epic` | Create SMART-compliant Epics |
+| `/create-story` | Create INVEST-compliant User Stories |
+| `/create-technical-enablement-story` | Create technical work stories |
+| `/story-invest-score` | Analyze individual story quality |
+| `/story-quality-kpis` | Track team performance metrics |
+| `/notes-to-work-item` | Transform notes into epics/stories |
 
 ## Installation
 
 ### Prerequisites
-- Windsurf IDE installed and configured
+- **Claude Code** or **Windsurf IDE** installed
 - Access to this agentic-development repository
 - Confluence access for the Wiser Solutions Epic and Story Standard (Page ID: 4660658177)
 
-### Setup Steps
+### Option A: Claude Code Installation (Recommended)
+
+#### Quick Install (One Command)
+```bash
+curl -fsSL https://raw.githubusercontent.com/WiserSolutions/agentic-development/main/install-claude-commands.sh | bash
+```
+
+#### Manual Installation
+```bash
+# Clone repository
+git clone --depth 1 git@github.com:WiserSolutions/agentic-development.git temp-commands
+
+# Create commands directory and copy
+mkdir -p .claude/commands
+cp temp-commands/claude-commands/*.md .claude/commands/
+
+# Cleanup
+rm -rf temp-commands
+```
+
+#### Verify Installation
+- Type `/` in Claude Code
+- Confirm these commands appear:
+  - `/create-epic`
+  - `/create-story`
+  - `/create-technical-enablement-story`
+  - `/story-invest-score`
+  - `/story-quality-kpis`
+
+#### Usage Examples
+
+**Create an Epic:**
+```
+/create-epic Customer Self-Service Portal to reduce support tickets by 40%
+```
+
+**Create a User Story:**
+```
+/create-story As a customer, I need to view my order history so I can track my purchases
+```
+
+**Create a Technical Enablement Story:**
+```
+/create-technical-enablement-story Implement JWT authentication middleware for API security
+```
+
+**Analyze Story Quality:**
+```
+/story-invest-score PROJ-123
+```
+
+### Option B: Windsurf IDE Installation
 
 1. **Clone Repository** (if not already done)
    ```bash
@@ -63,17 +129,23 @@ This comprehensive guide covers installing and using the Windsurf workflows for 
 
 ### File Structure
 ```
-├── .windsurf/workflows/
-│   ├── create-epic.md                    # Epic creation workflow
-│   ├── create-story.md                   # User story creation workflow
-│   ├── create-technical-enablement-story.md  # Technical story workflow
-│   ├── story-invest-score.md             # Individual story quality analysis
-│   ├── story-quality-kpis.md             # Team performance tracking
-│   ├── technical-enablement-rules.md     # Rules for technical stories
-│   └── agile-rules.md                    # Core agile rules and standards
-├── windsurf/workflows/
-│   ├── agile-rules.md                    # Legacy agile rules (updated)
-│   └── bugfix-rules.md                   # Bugfix-specific rules
+├── .claude/commands/                     # Claude Code commands
+│   ├── create-epic.md
+│   ├── create-story.md
+│   ├── create-technical-enablement-story.md
+│   ├── story-invest-score.md
+│   ├── story-quality-kpis.md
+│   └── notes-to-work-item.md
+├── claude-commands/                      # Source commands for distribution
+│   └── README.md                         # Claude Code documentation
+├── .windsurf/workflows/                  # Windsurf workflows
+│   ├── create-epic.md
+│   ├── create-story.md
+│   ├── create-technical-enablement-story.md
+│   ├── story-invest-score.md
+│   ├── story-quality-kpis.md
+│   └── technical-enablement-rules.md
+├── install-claude-commands.sh            # Installation script
 └── EPIC_STORY_WORKFLOWS.md              # This documentation
 ```
 
@@ -658,7 +730,16 @@ Recommendations:
 
 ### Common Issues and Solutions
 
-#### Workflow Not Appearing
+#### Command Not Appearing in Claude Code
+**Problem**: `/create-epic` or other commands don't appear in Claude Code
+**Solutions**:
+1. Verify commands are installed in `.claude/commands/` directory
+2. Re-run the installation script: `./install-claude-commands.sh`
+3. Check that command files have `.md` extension
+4. Restart Claude Code session
+5. Verify file permissions: `ls -la .claude/commands/`
+
+#### Command Not Appearing in Windsurf
 **Problem**: `/create-epic` or other workflows don't appear in Windsurf
 **Solutions**:
 1. Verify you're in the correct repository workspace
@@ -715,20 +796,21 @@ Recommendations:
 
 #### Resources
 1. **Confluence Standard**: Page ID 4660658177 - Authoritative source
-2. **Workflow Files**: `.windsurf/workflows/` - Implementation details
-3. **This Documentation**: `EPIC_STORY_WORKFLOWS.md` - Usage guide
-4. **Agile Rules**: `windsurf/workflows/agile-rules.md` - Core principles
+2. **Claude Code Commands**: `.claude/commands/` - Command implementations
+3. **Windsurf Workflows**: `.windsurf/workflows/` - Workflow implementations
+4. **Claude Commands README**: `claude-commands/README.md` - Installation guide
+5. **This Documentation**: `EPIC_STORY_WORKFLOWS.md` - Usage guide
 
 #### Support Process
 1. Check this documentation first
-2. Review workflow files for specific guidance
+2. Review command/workflow files for specific guidance
 3. Consult Confluence standard for authoritative requirements
 4. Reach out to team leads or agile coaches for assistance
 5. Contribute improvements back to this documentation
 
 ## Conclusion
 
-These Windsurf workflows implement the Wiser Solutions Epic and Story Standard to ensure consistent, high-quality backlog management across all engineering teams. By following these guidelines and using the provided workflows, teams can:
+These workflows implement the Wiser Solutions Epic and Story Standard to ensure consistent, high-quality backlog management across all engineering teams. Available for both **Claude Code** and **Windsurf IDE**, teams can:
 
 - Create SMART-compliant Epics that align with business strategy
 - Develop INVEST-compliant User Stories that deliver measurable value
