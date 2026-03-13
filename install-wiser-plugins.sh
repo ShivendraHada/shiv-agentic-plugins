@@ -165,6 +165,10 @@ cmd_update() {
             echo "    $file"
         done
     fi
+
+    # Refresh plugin cache and registry
+    install_plugins_to_cache
+
     echo ""
 }
 
