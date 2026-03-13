@@ -2,22 +2,7 @@
 description: Generate an actionable, dependency-ordered tasks.md for the feature based on available design artifacts.
 ---
 
----
-**CRITICAL: This project uses bd (beads) for ALL task tracking**
-
-**ABSOLUTE PROHIBITION - NO EXCEPTIONS:**
-- **NEVER use TodoWrite tool** - Any use is a VIOLATION of the constitution
-- **NEVER create TODO.md files** - Creating TODO.md is FORBIDDEN
-- **NEVER create TODO lists in markdown** - Task lists in ANY markdown file are PROHIBITED
-- **NEVER work around this requirement** - There are NO exceptions
-
-**REQUIRED:**
-- **ALWAYS use bd MCP functions** - Use `mcp__plugin_beads_beads__*` functions for all tracking
-- **ALWAYS track ALL tasks in bd** - Every task, subtask, and work item MUST be in bd
-
-See CLAUDE.md and AGENTS.md for complete bd workflow instructions.
-See .specify/memory/constitution.md Section IV for full requirements.
----
+This command uses bd (beads) for task tracking. Refer to the bd-workflow skill for details.
 
 ## User Input
 
@@ -65,7 +50,7 @@ You **MUST** consider the user input before proceeding (if not empty).
    - Parent bd issue ID and title
    - Total child issues created
    - **Ready work**: Show which bd issues are ready using `mcp__plugin_beads_beads__ready()`
-   - Next steps: "Run `/speckit.implement` to start working on ready tasks"
+   - Next steps: "Run `/speckit-implement` to start working on ready tasks"
 
 ## Task Generation Rules
 
@@ -96,9 +81,9 @@ tasks.md is a **simple reference list** pointing to bd issues. The real task det
 ```
 
 **What NOT to include**:
-- ❌ NO checkboxes `- [ ]` - bd tracks status, not markdown
-- ❌ NO Task IDs like T001, T002 - bd issue IDs are the task IDs
-- ❌ NO status indicators - use `bd ready` to see status
+- NO checkboxes `- [ ]` - bd tracks status, not markdown
+- NO Task IDs like T001, T002 - bd issue IDs are the task IDs
+- NO status indicators - use `bd ready` to see status
 
 ### Phase Structure
 
@@ -138,5 +123,11 @@ bd update bd-XXX --status in_progress
 bd close bd-XXX --reason "Completed"
 ```
 
-**Or use `/speckit.implement` to have AI implement tasks automatically.**
+**Or use `/speckit-implement` to have AI implement tasks automatically.**
 ```
+
+## Next Steps
+
+After generating tasks, consider running:
+- `/speckit-implement` - Start implementing the tasks automatically
+- `/speckit-taskstoissues` - Convert tasks into GitHub issues for team tracking

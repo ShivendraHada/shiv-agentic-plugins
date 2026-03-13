@@ -1,0 +1,8 @@
+{
+  "name": "wiser-dev",
+  "description": "Wiser Solutions development workflows: agentic TDD with human checkpoints, JIRA-integrated TDD, Jira-to-Terraform infrastructure pipelines, and automated PR code review",
+  "author": {
+    "name": "Wiser Solutions",
+    "email": "engineering@wisersolutions.com"
+  }
+}
