@@ -1,0 +1,8 @@
+{
+  "name": "wiser-speckit",
+  "description": "Speckit specification toolkit: specify features, clarify requirements, plan implementations, generate tasks, implement with bd tracking, analyze cross-artifact consistency, generate checklists, manage project constitutions, and export tasks to GitHub issues",
+  "author": {
+    "name": "Wiser Solutions",
+    "email": "engineering@wisersolutions.com"
+  }
+}

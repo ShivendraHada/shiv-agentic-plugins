@@ -2,22 +2,7 @@
 description: Execute the implementation plan by processing and executing all tasks defined in tasks.md
 ---
 
----
-**CRITICAL: This project uses bd (beads) for ALL task tracking**
-
-**ABSOLUTE PROHIBITION - NO EXCEPTIONS:**
-- **NEVER use TodoWrite tool** - Any use is a VIOLATION of the constitution
-- **NEVER create TODO.md files** - Creating TODO.md is FORBIDDEN
-- **NEVER create TODO lists in markdown** - Task lists in ANY markdown file are PROHIBITED
-- **NEVER work around this requirement** - There are NO exceptions
-
-**REQUIRED:**
-- **ALWAYS use bd MCP functions** - Use `mcp__plugin_beads_beads__*` functions for all tracking
-- **ALWAYS track ALL tasks in bd** - Every task, subtask, and work item MUST be in bd
-
-See CLAUDE.md and AGENTS.md for complete bd workflow instructions.
-See .specify/memory/constitution.md Section IV for full requirements.
----
+This command uses bd (beads) for task tracking. Refer to the bd-workflow skill for details.
 
 ## User Input
 
@@ -81,4 +66,10 @@ You **MUST** consider the user input before proceeding (if not empty).
    - Check that implemented features match the original specification
    - Report final status with summary: total tasks, completed, time taken
 
-Note: This command reads bd issue IDs from tasks.md and works through them using bd MCP functions. If tasks.md doesn't exist or bd issues aren't created, run `/speckit.tasks` first.
+Note: This command reads bd issue IDs from tasks.md and works through them using bd MCP functions. If tasks.md doesn't exist or bd issues aren't created, run `/speckit-tasks` first.
+
+## Next Steps
+
+After completing implementation, consider running:
+- `/speckit-analyze` - Perform cross-artifact consistency and quality analysis
+- `/speckit-checklist` - Generate a requirements quality checklist for the implemented feature

@@ -1,0 +1,8 @@
+{
+  "name": "wiser-agile",
+  "description": "Wiser Solutions agile workflows: create epics, stories, technical enablement stories, auto-groom sprints, score INVEST criteria, and transform notes into work items",
+  "author": {
+    "name": "Wiser Solutions",
+    "email": "engineering@wisersolutions.com"
+  }
+}

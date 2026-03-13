@@ -1,6 +1,17 @@
 #!/bin/bash
 #
-# Install Claude Code Commands
+# DEPRECATED: Use install-wiser-plugins.sh instead for global plugin installation.
+#
+# This script installs commands per-project. The new install-wiser-plugins.sh
+# installs plugins globally so they work across ALL projects without per-project setup.
+#
+# Migration:
+#   ./install-wiser-plugins.sh install    # Install globally (one-time)
+#   ./install-wiser-plugins.sh migrate    # Remove per-project duplicates
+#
+# ─────────────────────────────────────────────────────────────────────────────
+#
+# Install Claude Code Commands (Legacy - Per-Project)
 #
 # This script fetches and installs Claude Code slash commands from the
 # agentic-development repository to your local project.

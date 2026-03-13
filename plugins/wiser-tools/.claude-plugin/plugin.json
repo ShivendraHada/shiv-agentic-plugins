@@ -1,0 +1,8 @@
+{
+  "name": "wiser-tools",
+  "description": "Wiser plugin management utilities: sync plugins from central repository, check plugin status, detect local overrides",
+  "author": {
+    "name": "Wiser Solutions",
+    "email": "engineering@wisersolutions.com"
+  }
+}

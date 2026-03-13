@@ -21,30 +21,25 @@ Agentic development is a software engineering approach that integrates AI agents
 
 Choose your preferred AI assistant:
 
-### Option A: Claude Code (Recommended)
+### Option A: Claude Code — Global Plugins (Recommended)
 
-Install slash commands in any project with a single command:
+Install all Wiser plugins globally so they work in every project:
 
 ```bash
-# Quick install
-curl -fsSL https://raw.githubusercontent.com/WiserSolutions/agentic-development/main/install-claude-commands.sh | bash
+# One-time global install
+curl -fsSL https://raw.githubusercontent.com/WiserSolutions/agentic-development/main/install-wiser-plugins.sh | bash -s install
 ```
 
 Or clone and run manually:
 ```bash
-# Clone repository
-git clone --depth 1 git@github.com:WiserSolutions/agentic-development.git temp-commands
-
-# Create commands directory and copy
-mkdir -p .claude/commands
-cp temp-commands/claude-commands/*.md .claude/commands/
-
-# Cleanup
-rm -rf temp-commands
+git clone --depth 1 git@github.com:WiserSolutions/agentic-development.git temp-plugins
+./temp-plugins/install-wiser-plugins.sh install
+rm -rf temp-plugins
 ```
 
 After installation, use `/` in Claude Code to see all available commands:
 
+#### Agile Commands (wiser-agile plugin)
 | Command | Description |
 |---------|-------------|
 | `/create-epic` | Create SMART-compliant epics |
@@ -52,11 +47,53 @@ After installation, use `/` in Claude Code to see all available commands:
 | `/create-technical-enablement-story` | Create technical enablement stories |
 | `/story-invest-score` | Analyze story quality against INVEST |
 | `/story-quality-kpis` | Track team performance metrics |
-| `/tdd-workflow` | Test-Driven Development with AI assistance |
-| `/notes-to-work-item` | Transform notes into epics/stories |
 | `/auto-groom` | Auto-groom sprint stories |
+| `/notes-to-work-item` | Transform notes into epics/stories |
 
-📖 **[Claude Code Commands Documentation](./claude-commands/README.md)**
+#### Development Commands (wiser-dev plugin)
+| Command | Description |
+|---------|-------------|
+| `/tdd-workflow` | Test-Driven Development with AI assistance |
+| `/agentic-tdd-jira` | TDD workflow with JIRA integration |
+| `/agentic-terraform` | Jira-to-Terraform infrastructure workflow |
+| `/review-pr` | Automated PR code review with line-level GitHub comments |
+
+#### Spec Kit Commands (wiser-speckit plugin)
+| Command | Description |
+|---------|-------------|
+| `/speckit-specify` | Create feature specifications |
+| `/speckit-clarify` | Clarify underspecified areas |
+| `/speckit-plan` | Generate implementation plans |
+| `/speckit-tasks` | Break down into tasks |
+| `/speckit-implement` | Execute implementation |
+| `/speckit-analyze` | Cross-artifact consistency analysis |
+| `/speckit-checklist` | Generate verification checklists |
+| `/speckit-constitution` | Manage project governance |
+| `/speckit-taskstoissues` | Export tasks to GitHub issues |
+
+#### Management Commands (wiser-tools plugin)
+| Command | Description |
+|---------|-------------|
+| `/wiser-sync` | Update plugins from central repo |
+| `/wiser-status` | Show installed plugins and overrides |
+
+**Managing plugins:**
+```bash
+./install-wiser-plugins.sh update     # Update to latest
+./install-wiser-plugins.sh list       # List installed plugins
+./install-wiser-plugins.sh status     # Detect local overrides
+./install-wiser-plugins.sh migrate    # Clean up per-project duplicates
+```
+
+**Local overrides:** To customize any command for a specific project, create a file with the same name in your project's `.claude/commands/` directory. The local version takes priority.
+
+### Option A (Legacy): Per-Project Install
+
+> **Deprecated:** Use the global plugin install above instead.
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/WiserSolutions/agentic-development/main/install-claude-commands.sh | bash
+```
 
 ### Option B: Windsurf IDE
 
