@@ -114,6 +114,9 @@ cmd_install() {
         register_marketplace
     fi
 
+    # Install plugins into Claude Code's plugin cache and registry
+    install_plugins_to_cache
+
     # Validate bd hooks
     validate_bd_hooks
 
@@ -162,6 +165,10 @@ cmd_update() {
             echo "    $file"
         done
     fi
+
+    # Refresh plugin cache and registry
+    install_plugins_to_cache
+
     echo ""
 }
 
@@ -337,6 +344,19 @@ cmd_remove() {
         rm -rf "$MARKETPLACE_DIR"
         print_success "Wiser plugins removed"
 
+        # Remove plugin cache
+        rm -rf "$HOME/.claude/plugins/cache/wiser-plugins"
+        print_success "Removed plugin cache"
+
+        # Deregister plugins from installed_plugins.json
+        local installed_json="$HOME/.claude/plugins/installed_plugins.json"
+        if command -v jq &>/dev/null && [ -f "$installed_json" ]; then
+            local tmp
+            tmp=$(mktemp)
+            jq '.plugins |= with_entries(select(.key | endswith("@wiser-plugins") | not))' "$installed_json" > "$tmp" && mv "$tmp" "$installed_json"
+            print_success "Deregistered plugins from installed list"
+        fi
+
         # Deregister from known_marketplaces.json
         if command -v jq &>/dev/null && [ -f "$KNOWN_MARKETPLACES" ]; then
             local tmp
@@ -404,6 +424,66 @@ cmd_migrate() {
         print_info "Removed empty .claude/commands/ directory"
     fi
     echo ""
+}
+
+# ─────────────────────────────────────────────
+# Helper: Install plugins into Claude Code cache and registry
+# ─────────────────────────────────────────────
+install_plugins_to_cache() {
+    local cache_dir="$HOME/.claude/plugins/cache/wiser-plugins"
+    local installed_json="$HOME/.claude/plugins/installed_plugins.json"
+    local now
+    now=$(date -u +"%Y-%m-%dT%H:%M:%S.000Z")
+
+    # Ensure installed_plugins.json exists
+    if [ ! -f "$installed_json" ]; then
+        echo '{"version":2,"plugins":{}}' > "$installed_json"
+    fi
+
+    echo ""
+    print_info "Registering plugins with Claude Code..."
+
+    for plugin_dir in "$MARKETPLACE_DIR/$PLUGINS_SUBDIR"/wiser-*/; do
+        [ -d "$plugin_dir" ] || continue
+        local plugin_name
+        plugin_name=$(basename "$plugin_dir")
+
+        # Read version from marketplace.json, default to 1.0.0
+        local version="1.0.0"
+        local marketplace_json="$MARKETPLACE_DIR/.claude-plugin/marketplace.json"
+        if [ -f "$marketplace_json" ] && [ "$JQ_AVAILABLE" = true ]; then
+            local v
+            v=$(jq -r --arg name "$plugin_name" '.plugins[] | select(.name == $name) | .version // "1.0.0"' "$marketplace_json" 2>/dev/null)
+            [ -n "$v" ] && version="$v"
+        fi
+
+        # Copy plugin to cache
+        local plugin_cache="$cache_dir/$plugin_name/$version"
+        mkdir -p "$plugin_cache"
+        rsync -a --delete "$plugin_dir" "$plugin_cache/"
+        print_success "Cached $plugin_name@$version"
+
+        # Register in installed_plugins.json
+        if [ "$JQ_AVAILABLE" = true ]; then
+            local key="${plugin_name}@wiser-plugins"
+            local tmp
+            tmp=$(mktemp)
+            jq --arg key "$key" \
+               --arg path "$plugin_cache" \
+               --arg ver "$version" \
+               --arg now "$now" \
+               '.plugins[$key] = [{
+                    "scope": "user",
+                    "installPath": $path,
+                    "version": $ver,
+                    "installedAt": $now,
+                    "lastUpdated": $now,
+                    "isLocal": true
+                }]' "$installed_json" > "$tmp" && mv "$tmp" "$installed_json"
+        fi
+    done
+
+    print_success "All plugins registered with Claude Code"
 }
 
 # ─────────────────────────────────────────────
