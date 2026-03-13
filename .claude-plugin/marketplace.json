@@ -1,0 +1,55 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "wiser-plugins",
+  "description": "Wiser Solutions development plugins for agile workflows, TDD, spec-driven development, and plugin management",
+  "owner": {
+    "name": "Wiser Solutions",
+    "email": "engineering@wisersolutions.com"
+  },
+  "plugins": [
+    {
+      "name": "wiser-agile",
+      "description": "Agile workflows: create epics, stories, auto-groom, INVEST scoring",
+      "version": "1.0.0",
+      "author": {
+        "name": "Wiser Solutions",
+        "email": "engineering@wisersolutions.com"
+      },
+      "source": "./plugins/wiser-agile",
+      "category": "productivity"
+    },
+    {
+      "name": "wiser-dev",
+      "description": "Development workflows: TDD, JIRA-integrated TDD, Terraform, PR review",
+      "version": "1.0.0",
+      "author": {
+        "name": "Wiser Solutions",
+        "email": "engineering@wisersolutions.com"
+      },
+      "source": "./plugins/wiser-dev",
+      "category": "development"
+    },
+    {
+      "name": "wiser-speckit",
+      "description": "Specification toolkit: specify, clarify, plan, implement, analyze",
+      "version": "1.0.0",
+      "author": {
+        "name": "Wiser Solutions",
+        "email": "engineering@wisersolutions.com"
+      },
+      "source": "./plugins/wiser-speckit",
+      "category": "productivity"
+    },
+    {
+      "name": "wiser-tools",
+      "description": "Plugin management: sync and status utilities",
+      "version": "1.0.0",
+      "author": {
+        "name": "Wiser Solutions",
+        "email": "engineering@wisersolutions.com"
+      },
+      "source": "./plugins/wiser-tools",
+      "category": "utilities"
+    }
+  ]
+}

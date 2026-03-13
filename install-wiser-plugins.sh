@@ -79,6 +79,8 @@ cmd_install() {
     if [ -d "$MARKETPLACE_DIR/.git" ]; then
         print_info "Existing installation found. Updating..."
         cd "$MARKETPLACE_DIR"
+        # Ensure .claude-plugin/ is included in sparse checkout
+        git sparse-checkout set "$PLUGINS_SUBDIR/" ".claude-plugin/" 2>/dev/null
         git fetch origin "$BRANCH" --depth 1 2>/dev/null
         git reset --hard "origin/$BRANCH" 2>/dev/null
         print_success "Updated to latest version"
@@ -91,8 +93,16 @@ cmd_install() {
             "$REPO_URL" "$MARKETPLACE_DIR" 2>/dev/null
 
         cd "$MARKETPLACE_DIR"
-        git sparse-checkout set "$PLUGINS_SUBDIR/" 2>/dev/null
+        git sparse-checkout set "$PLUGINS_SUBDIR/" ".claude-plugin/" 2>/dev/null
         print_success "Repository cloned with sparse checkout"
+    fi
+
+    # Create symlink for repo-name-based path resolution
+    # Claude Code may resolve marketplace path from the GitHub repo name
+    local repo_name_dir="$HOME/.claude/plugins/marketplaces/WiserSolutions-agentic-development"
+    if [ ! -e "$repo_name_dir" ]; then
+        ln -s "$MARKETPLACE_DIR" "$repo_name_dir"
+        print_success "Created symlink for repo-name resolution"
     fi
 
     # Register as marketplace in known_marketplaces.json
@@ -320,6 +330,10 @@ cmd_remove() {
 
     read -r -p "  Remove all Wiser plugins? [y/N] " confirm
     if [[ "$confirm" =~ ^[Yy]$ ]]; then
+        # Remove repo-name symlink if it exists
+        local repo_name_dir="$HOME/.claude/plugins/marketplaces/WiserSolutions-agentic-development"
+        [ -L "$repo_name_dir" ] && rm "$repo_name_dir" && print_success "Removed repo-name symlink"
+
         rm -rf "$MARKETPLACE_DIR"
         print_success "Wiser plugins removed"
 
