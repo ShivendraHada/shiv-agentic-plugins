@@ -132,76 +132,76 @@ For non-Story types (Task, Bug, Spike, etc.), adapt the template:
 
 For **Story** type:
 ```markdown
-## User Story
+## 📖 User Story
 As a [specific user role]
 I need to [specific action or capability]
 So that I can [specific business value or benefit]
 
-## Value Statement
+## 💎 Value Statement
 [Detailed explanation of the business value]
 
-## Definition of Done
+## ✅ Definition of Done
 - General DoD Checklist completed
 - [Story-specific requirements]
 - Ready for production deployment
 
-## Assumptions
+## 💡 Assumptions
 [Any assumptions]
 
-## Dependencies
+## 🔗 Dependencies
 [Any dependencies]
 
-## Notes
+## 📝 Notes
 [Additional context]
 ```
 
 For **Task** type:
 ```markdown
-## Description
+## 📋 Description
 [What needs to be done and why]
 
-## Definition of Done
+## ✅ Definition of Done
 - [Specific completion criteria]
 
-## Assumptions
+## 💡 Assumptions
 [Any assumptions]
 
-## Dependencies
+## 🔗 Dependencies
 [Any dependencies]
 ```
 
 For **Bug** type:
 ```markdown
-## Bug Description
+## 🐛 Bug Description
 [What is broken]
 
-## Steps to Reproduce
+## 🔄 Steps to Reproduce
 1. [Step 1]
 2. [Step 2]
 3. [Observe: ...]
 
-## Expected Behavior
+## ✅ Expected Behavior
 [What should happen]
 
-## Actual Behavior
+## ❌ Actual Behavior
 [What actually happens]
 
-## Dependencies
+## 🔗 Dependencies
 [Any dependencies]
 ```
 
 For **Spike** type:
 ```markdown
-## Research Question
+## 🔬 Research Question
 [What we need to find out]
 
-## Time Box
+## ⏱️ Time Box
 [Maximum time to spend]
 
-## Expected Output
+## 🎯 Expected Output
 [Decision, proof of concept, or recommendation]
 
-## Options Being Evaluated
+## 🔀 Options Being Evaluated
 [List of approaches being considered]
 ```
 
@@ -381,3 +381,27 @@ As a developer, I need to refactor the auth module, So that the code is cleaner
 ```
 
 **Acceptance criteria in description** — always use `customfield_10058`.
+
+---
+
+## Emoji Usage
+
+Use one emoji per section heading in the Jira description to improve scannability. Keep it minimal — headings only, never in body text or acceptance criteria.
+
+| Heading | Emoji |
+|---------|-------|
+| User Story | 📖 |
+| Value Statement | 💎 |
+| Definition of Done | ✅ |
+| Assumptions | 💡 |
+| Dependencies | 🔗 |
+| Notes | 📝 |
+| Description (Task) | 📋 |
+| Bug Description | 🐛 |
+| Steps to Reproduce | 🔄 |
+| Expected Behavior | ✅ |
+| Actual Behavior | ❌ |
+| Research Question (Spike) | 🔬 |
+| Time Box | ⏱️ |
+| Expected Output | 🎯 |
+| Options Being Evaluated | 🔀 |
