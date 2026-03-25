@@ -1,11 +1,11 @@
 ---
 description: Create high-quality User Stories following Wiser Solutions INVEST principles and standard templates
-argument-hint: <story title or description of the user need, optionally with parent epic key>
+argument-hint: [story description] [--epic KEY] [--project KEY] [--type story|task|bug|spike|tech-debt] [--dry-run]
 ---
 
-# Create User Story Workflow
+# Create Work Item Workflow
 
-Create high-quality User Stories following Wiser Solutions INVEST principles and standard templates (Confluence Page ID: 4660658177).
+Create high-quality work items following Wiser Solutions INVEST principles, automatically posted to Jira.
 
 ## User Input
 
@@ -13,244 +13,371 @@ Create high-quality User Stories following Wiser Solutions INVEST principles and
 $ARGUMENTS
 ```
 
-Consider the user input above when creating the story. If empty, ask for the story details.
+## Configuration
 
-## User Story Definition (Wiser Standard)
+This command uses user-scoped defaults stored at `~/.claude/wiser-agile-config.json`. If the config file exists, load it and use the values as prefilled defaults. Users can override any value per invocation.
 
-A User Story is a concise description of a feature from an end-user perspective that delivers incremental value and can be completed within a single sprint.
+**Config file format:**
+```json
+{
+  "cloudId": "wisersolutions.atlassian.net",
+  "defaultProject": "SPE",
+  "defaultAssignee": null,
+  "defaultTeam": null,
+  "defaultLabels": []
+}
+```
 
-## Required Story Format (Wiser Standard)
+**On first run**: If `~/.claude/wiser-agile-config.json` does not exist, ask the user for their default project key and create the config file. Use `wisersolutions.atlassian.net` as the cloudId.
+
+---
+
+## Step 1: Parse Arguments & Resolve Defaults
+
+1. **Load config** from `~/.claude/wiser-agile-config.json` (create if missing)
+2. **Parse flags** from `$ARGUMENTS`:
+   - `--epic KEY` or `--parent KEY` — parent epic/story key
+   - `--project KEY` — Jira project key (overrides config default)
+   - `--type TYPE` — issue type (story, task, bug, spike, tech-debt, sub-task, support-request, adr)
+   - `--dry-run` — draft only, do not create on Jira
+   - `--assign QUERY` — assignee search query
+   - Everything else is the story description/title
+3. **If no description provided**: Ask the user what they need
+
+---
+
+## Step 2: Resolve Project & Issue Type
+
+### Project (Board)
+
+If `--project` is provided, use it. Otherwise use `defaultProject` from config.
+
+If neither exists, fetch available projects using `mcp__atlassian__getVisibleJiraProjects` and ask the user to pick one. Show the list:
 
 ```
-As a [specific user role]
-I need to [specific action or capability]
-So that I can [specific business value or benefit]
+Which project? (enter key or number)
+  1. SPE — SaaS Platform East
+  2. ABC — Another Project
+  ...
+Your default project [none]: _
 ```
 
-## Story Quality Requirements
+Save their choice to config as `defaultProject`.
 
-1. **Format**: Must follow the required "As a... I need to... So that I can..." format
-2. **Value**: Must include detailed value statement with quantifiable impact
-3. **Acceptance Criteria**: Must use Gherkin syntax (Given/When/Then)
-4. **Size**: Must be completable within one sprint (1-8 story points)
-5. **Independence**: Should minimize dependencies on other stories
-6. **INVEST Compliance**: Must meet all INVEST criteria with target average of 3.5-4.0
+### Issue Type
 
-## Workflow Steps
+If `--type` is provided, map it:
 
-### Step 1: Story Context and Information Gathering
+| Flag Value | Jira Issue Type |
+|-----------|----------------|
+| `story` | Story |
+| `task` | Task |
+| `bug` | Bug |
+| `spike` | Spike |
+| `tech-debt` | Tech Debt |
+| `sub-task` | Sub-task |
+| `support-request` | Support Request |
+| `adr` | Architecture Decision Record |
 
-**Epic Context:**
-- What epic does this story belong to?
-- How does this story contribute to epic success criteria?
-- What is the priority within the epic?
+If not provided, ask the user:
 
-**User and Value Context:**
-- Who is the specific user role for this story?
-- What specific capability or action do they need?
-- What business value or benefit will they gain?
-- How can this value be measured or demonstrated?
+```
+What type of work item?
+  1. Story — User-facing feature (default)
+  2. Task — Discovery, documentation, or non-implementation work
+  3. Bug — Unexpected behavior or defect
+  4. Spike — Research or investigation with multiple paths
+  5. Tech Debt — Addressing previous shortcuts
+  6. Sub-task — Breakdown of a parent story/task
+  ...
+Type [story]: _
+```
 
-**Functional Context:**
-- What is the core functionality being delivered?
-- What are the main user workflows involved?
-- What data or systems are involved?
-- What are the key edge cases or error scenarios?
+### Parent Epic
 
-### Step 2: Story Creation Using Wiser Template
+If `--epic` is provided, use it. If not, and the type is Sub-task, ask for the parent issue key.
 
-Create the story using the Wiser Solutions template structure:
+If neither is provided and type is Story/Task/Bug, ask:
 
+```
+Parent epic? (enter key, or press Enter to skip)
+Epic [none]: _
+```
+
+---
+
+## Step 3: Gather Story Details
+
+Based on what the user provided, ask for any missing information. Show prefilled values from config.
+
+**Required information:**
+- **Summary/Title**: One-line summary for the Jira ticket
+- **User Story Statement** (for Story type): As a [role], I need to [action], So that I can [benefit]
+- **Value Statement**: Why this matters (business impact)
+- **Acceptance Criteria**: Gherkin syntax (Given/When/Then scenarios)
+- **Assumptions**: Any assumptions made
+- **Dependencies**: Blockers or related work
+
+For non-Story types (Task, Bug, Spike, etc.), adapt the template:
+- **Task**: Description of work, acceptance criteria, definition of done
+- **Bug**: Steps to reproduce, expected vs actual behavior, acceptance criteria for the fix
+- **Spike**: Research questions, time-box, expected output/decision
+- **Tech Debt**: Current state, desired state, acceptance criteria
+
+---
+
+## Step 4: Draft the Work Item
+
+### Description (goes in Jira `description` field)
+
+For **Story** type:
 ```markdown
-# Story: [Story Title]
-
 ## User Story
 As a [specific user role]
 I need to [specific action or capability]
 So that I can [specific business value or benefit]
 
 ## Value Statement
-[Detailed explanation of the business value, ideally with quantifiable impact]
+[Detailed explanation of the business value]
 
-## Acceptance Criteria
+## Definition of Done
+- General DoD Checklist completed
+- [Story-specific requirements]
+- Ready for production deployment
+
+## Assumptions
+[Any assumptions]
+
+## Dependencies
+[Any dependencies]
+
+## Notes
+[Additional context]
+```
+
+For **Task** type:
+```markdown
+## Description
+[What needs to be done and why]
+
+## Definition of Done
+- [Specific completion criteria]
+
+## Assumptions
+[Any assumptions]
+
+## Dependencies
+[Any dependencies]
+```
+
+For **Bug** type:
+```markdown
+## Bug Description
+[What is broken]
+
+## Steps to Reproduce
+1. [Step 1]
+2. [Step 2]
+3. [Observe: ...]
+
+## Expected Behavior
+[What should happen]
+
+## Actual Behavior
+[What actually happens]
+
+## Dependencies
+[Any dependencies]
+```
+
+For **Spike** type:
+```markdown
+## Research Question
+[What we need to find out]
+
+## Time Box
+[Maximum time to spend]
+
+## Expected Output
+[Decision, proof of concept, or recommendation]
+
+## Options Being Evaluated
+[List of approaches being considered]
+```
+
+### Acceptance Criteria (goes in Jira custom field `customfield_10058`)
+
+Always use Gherkin syntax:
 ```gherkin
-Scenario: [Primary happy path scenario]
-Given [initial context/state]
-When [action taken by user]
-Then [expected outcome]
-And [additional expected outcomes]
+Scenario: [Primary happy path]
+Given [context]
+When [action]
+Then [outcome]
 
-Scenario: [Edge case or error scenario]
-Given [different context/state]
-When [different action or error condition]
-Then [expected error handling]
-And [recovery options presented]
-
-Scenario: [Additional scenarios as needed]
+Scenario: [Edge case / error path]
 Given [context]
 When [action]
 Then [outcome]
 ```
 
-## Definition of Done
-- [ ] General DoD Checklist completed (see team standards)
-- [ ] [Story-specific requirements]
-- [ ] Ready for production deployment
+**IMPORTANT**: Acceptance criteria go into the dedicated Jira custom field (`customfield_10058`), NOT into the description. The description field contains the user story, value statement, and other context.
 
-## Assumptions
-[Any assumptions made during story creation]
+---
 
-## Dependencies
-[Any dependencies on other stories, teams, or external factors]
+## Step 5: INVEST Score (Story type only)
 
-## Notes
-[Additional context, technical considerations, or implementation notes]
+For Story-type items, validate against INVEST criteria using the 1-5 scale:
+
+| Criterion | Target | Score |
+|-----------|--------|-------|
+| **I**ndependent | >= 3 | [1-5] |
+| **N**egotiable | >= 3 | [1-5] |
+| **V**aluable | >= 4 | [1-5] |
+| **E**stimable | >= 3 | [1-5] |
+| **S**mall | >= 3 | [1-5] |
+| **T**estable | >= 4 | [1-5] |
+
+**Overall**: [Total]/30 ([Avg]/5)
+
+Quality gate:
+- **Ready**: Average >= 3.5 (21+), no score below 2
+- **Needs Refinement**: Average 3.0-3.4 (18-20) or any below 2
+- **Rework Required**: Average < 3.0 (< 18)
+
+If below target, suggest specific improvements before creating.
+
+**Do NOT include INVEST scores in the Jira ticket.** Show them only in the user-facing summary.
+
+---
+
+## Step 6: Show Summary & Confirm
+
+Present the complete work item to the user before creating:
+
+```
+## Work Item Summary
+
+**Project**: SPE — SaaS Platform East
+**Type**: Story
+**Parent**: SPE-1019
+**Summary**: Add composite index on catalog_products
+
+### Description
+[full description preview]
+
+### Acceptance Criteria (custom field)
+[Gherkin scenarios preview]
+
+### INVEST Score: 28/30 (4.7 avg) — Ready for Sprint
+| I | N | V | E | S | T |
+|---|---|---|---|---|---|
+| 5 | 4 | 4 | 5 | 5 | 5 |
+
+---
+Create on Jira? [Y/n]: _
 ```
 
-### Step 3: INVEST Criteria Validation
+If `--dry-run` was specified, show the summary and stop. Do not create.
 
-Validate the story against each INVEST criterion using the Wiser Solutions 1-5 scale:
+---
 
-#### **I - Independent** (Target: >=3)
-**Requirement**: Story can be developed without dependencies on other stories
+## Step 7: Create on Jira
 
-**Validation Questions:**
-- Can this story be developed without waiting for other stories?
-- Are dependencies on other stories in the same sprint manageable?
-- Can this story be developed in any order?
-- Are interfaces with other work clearly defined?
+Use `mcp__atlassian__createJiraIssue` with:
 
-**Score**: [1-5] - Rate the independence level
-
-#### **N - Negotiable** (Target: >=3)
-**Requirement**: Story details can be refined through collaboration
-
-**Validation Questions:**
-- Is the implementation approach flexible?
-- Can acceptance criteria be refined during development?
-- Is there room for developer input on technical approach?
-- Can scope be adjusted while maintaining core value?
-
-**Score**: [1-5] - Rate the negotiability level
-
-#### **V - Valuable** (Target: >=4)
-**Requirement**: Story delivers clear business or user value
-
-**Validation Questions:**
-- Is the value statement specific and measurable?
-- Is the benefit meaningful to end users or business?
-- Can value be demonstrated upon completion?
-- Does it contribute to larger epic or business objective?
-
-**Score**: [1-5] - Rate the value clarity and impact
-
-#### **E - Estimable** (Target: >=3)
-**Requirement**: Story is well-defined enough for accurate estimation
-
-**Validation Questions:**
-- Are requirements clear and unambiguous?
-- Is the technical approach understood?
-- Are acceptance criteria specific enough?
-- Can the team confidently estimate effort?
-
-**Score**: [1-5] - Rate the estimability
-
-#### **S - Small** (Target: >=3)
-**Requirement**: Story can be completed within one sprint
-
-**Validation Questions:**
-- Can this be completed in 1-5 days?
-- Is scope focused on single functionality?
-- Can it be demonstrated as working software?
-- Is it estimated at 1-8 story points?
-
-**Score**: [1-5] - Rate the size appropriateness
-
-#### **T - Testable** (Target: >=4)
-**Requirement**: Story has clear, verifiable acceptance criteria
-
-**Validation Questions:**
-- Do acceptance criteria use Gherkin syntax?
-- Do criteria cover happy path and edge cases?
-- Are success/failure conditions unambiguous?
-- Can criteria be automated as tests?
-
-**Score**: [1-5] - Rate the testability
-
-### Step 4: INVEST Score Analysis
-
-**Individual INVEST Scores:**
-- Independent (I): [1-5] / 5
-- Negotiable (N): [1-5] / 5
-- Valuable (V): [1-5] / 5
-- Estimable (E): [1-5] / 5
-- Small (S): [1-5] / 5
-- Testable (T): [1-5] / 5
-
-**Overall INVEST Score**: [Total] / 30 ([Percentage]%)
-**Average Score**: [Total/6] (Target: 3.5-4.0)
-
-**Quality Assessment:**
-- **Ready for Sprint**: Average score >=3.5 (21+ total) with no individual scores below 2
-- **Needs Refinement**: Average score 3.0-3.4 (18-20 total) or any score below 2
-- **Significant Rework Required**: Average score <3.0 (<18 total) or multiple scores below 3
-
-### Step 5: Story Improvement (If Needed)
-
-For any INVEST criterion scoring below target, provide specific improvement recommendations.
-
-### Step 6: Story Quality Validation
-
-#### Story Quality Checklist
-- Follows proper user story format (As a... I need... So that I can...)
-- Value statement is specific and measurable
-- Acceptance criteria are clear, specific, and unambiguous
-- Gherkin syntax used for acceptance criteria
-- Criteria cover happy path and edge cases
-- Definition of Done is comprehensive and specific
-- Story is independent and can be completed in one sprint
-- Story is estimable by the development team
-- All INVEST criteria meet target scores (average >=3.5)
-- Story contributes to epic success criteria
-
-#### Anti-Pattern Check
-Ensure the story avoids these common anti-patterns:
-
-**Vague User Story**:
 ```
-As a user
-I want the system to be better
-So that it works well
+cloudId: from config (wisersolutions.atlassian.net)
+projectKey: resolved project key
+issueTypeName: resolved issue type name
+summary: one-line title
+description: full description (markdown format)
+contentFormat: "markdown"
+parent: epic key (if provided)
+additional_fields: {
+  "customfield_10058": "<acceptance criteria in Gherkin>",
+  "customfield_10012": <story points if estimated>,
+  "labels": <labels from config or user>
+}
 ```
 
-**Technical Story** (use Technical Enablement instead):
+If assignee was specified or is in config, include `assignee_account_id`. Use `mcp__atlassian__lookupJiraAccountId` to resolve from name/email if needed.
+
+---
+
+## Step 8: Report Result
+
+After successful creation, show:
+
 ```
-As a developer
-I need to refactor the authentication module
-So that the code is cleaner
+## Created: SPE-1042
+
+**Type**: Story
+**Summary**: Add composite index on catalog_products
+**Parent**: SPE-1019
+**URL**: https://wisersolutions.atlassian.net/browse/SPE-1042
+
+### INVEST Score: 28/30 (4.7 avg)
+| I | N | V | E | S | T |
+|---|---|---|---|---|---|
+| 5 | 4 | 4 | 5 | 5 | 5 |
+
+### Next Steps
+- `/story-invest-score SPE-1042` — Re-score after refinement
+- `/create-technical-enablement-story` — Create tech enablement stories
+- `/auto-groom` — Groom all stories in the sprint
 ```
 
-**Implementation-focused Acceptance Criteria**:
+---
+
+## Jira Field Reference
+
+| Field | Jira Key | Type | Notes |
+|-------|----------|------|-------|
+| Summary | `summary` | string | Required. One-line title |
+| Description | `description` | string | Required. Full story/task body (markdown) |
+| Issue Type | `issuetype` | system | Required. Story, Task, Bug, Spike, etc. |
+| Parent | `parent` | issuelink | Epic or parent story key |
+| Acceptance Criteria | `customfield_10058` | textarea | **Gherkin scenarios go here, NOT in description** |
+| Story Points | `customfield_10012` | number | Optional estimate |
+| Sprint | `customfield_10008` | array | Optional sprint assignment |
+| Team | `customfield_10001` | team | Optional team assignment |
+| Assignee | `assignee` | user | Optional |
+| Labels | `labels` | array[string] | Optional |
+| Priority | `priority` | priority | Blocker, Critical, Major, Minor, Trivial, None |
+| Components | `components` | array | Optional milestone/component |
+
+## Supported Issue Types (SPE Project)
+
+| Type | ID | When to Use |
+|------|----|-------------|
+| Story | 10001 | User-facing feature delivering incremental value |
+| Task | 10002 | Discovery, documentation, non-implementation activity |
+| Bug | 10004 | Unexpected behavior or defect |
+| Spike | 10163 | Research when multiple paths exist |
+| Tech Debt | 10152 | Addressing previous shortcuts |
+| Sub-task | 10003 | Breakdown of parent story/task/bug |
+| Support Request | 10008 | External/internal support needs |
+| Architecture Decision Record | 10159 | Significant design decisions |
+
+---
+
+## Anti-Patterns to Avoid
+
+**Vague stories:**
 ```
-Acceptance Criteria:
-- Use React hooks for state management
-- Implement JWT authentication
-- Store data in PostgreSQL
+As a user, I want the system to be better, So that it works well
 ```
 
-### Step 7: Story Finalization
+**Technical stories** (use `/create-technical-enablement-story` instead):
+```
+As a developer, I need to refactor the auth module, So that the code is cleaner
+```
 
-#### Final Review
-- Story follows Wiser Solutions template exactly
-- All INVEST criteria satisfied (average >=3.5)
-- Quality checklist items all pass
-- Anti-patterns avoided
-- Story ready for sprint planning
+**Implementation-focused acceptance criteria:**
+```
+- Use React hooks
+- Implement JWT auth
+- Store in PostgreSQL
+```
 
-## Next Steps
-
-Once your story is finalized, continue with these related commands:
-- `/story-invest-score` - Run a detailed INVEST score analysis on this or other stories
-- `/create-technical-enablement-story` - Create technical enablement stories for infrastructure work needed by this story
-- `/auto-groom` - Automatically groom all stories in a sprint
-- `/story-quality-kpis` - Generate quality KPIs across teams for sprint tracking
+**Acceptance criteria in description** — always use `customfield_10058`.
