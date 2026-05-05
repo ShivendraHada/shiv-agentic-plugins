@@ -50,6 +50,17 @@
       },
       "source": "./plugins/wiser-tools",
       "category": "utilities"
+    },
+    {
+      "name": "wiser-design-docs",
+      "description": "Design documentation for Confluence: create, sync, and manage Technical Architecture, Detailed Design, ADR, Runbook, and API Design documents from Jira context",
+      "version": "1.0.0",
+      "author": {
+        "name": "Wiser Solutions",
+        "email": "engineering@wisersolutions.com"
+      },
+      "source": "./plugins/wiser-design-docs",
+      "category": "documentation"
     }
   ]
 }
