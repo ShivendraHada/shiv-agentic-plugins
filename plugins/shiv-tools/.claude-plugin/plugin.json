@@ -1,0 +1,9 @@
+{
+  "name": "shiv-tools",
+  "version": "1.0.0",
+  "description": "Shiv plugin management utilities: sync plugins, check status, detect local overrides, and scaffold new plugins",
+  "author": {
+    "name": "Shiv Solutions",
+    "email": "engineering@shivsolutions.com"
+  }
+}

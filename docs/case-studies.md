@@ -1,6 +1,6 @@
 # Agentic Development Case Studies
 
-This document presents real-world case studies of agentic development at Wiser Solutions, highlighting successful implementations, challenges overcome, and lessons learned.
+This document presents real-world case studies of agentic development at Shiv Solutions, highlighting successful implementations, challenges overcome, and lessons learned.
 
 ## Case Study 1: PostgreSQL Audit System Optimization
 

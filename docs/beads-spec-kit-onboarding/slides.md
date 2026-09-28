@@ -44,10 +44,10 @@ bd fixes these problems by:
 
 - Treats specs as first-class executable artifacts.
 - Provides a repeatable flow:
-  - `/speckit.specify` → feature spec (`spec.md`)
-  - `/speckit.plan` → implementation plan (`plan.md`, `research.md`, `data-model.md`)
-  - `/speckit.tasks` → ordered tasks (`tasks.md`)
-  - `/speckit.implement` → implementation driven by tasks.
+  - `/speckit-specify` → feature spec (`spec.md`)
+  - `/speckit-plan` → implementation plan (`plan.md`, `research.md`, `data-model.md`)
+  - `/speckit-tasks` → ordered tasks (`tasks.md`)
+  - `/speckit-implement` → implementation driven by tasks.
 - Keeps conversation, docs, and code in sync under version control.
 
 ### Why Spec Kit is required for TDD-style discipline with AI
@@ -57,12 +57,12 @@ bd fixes these problems by:
     not from a stable spec.
   - Requirements creep into code without being reflected in docs.
 - **Enforces a testable workflow**:
-  - `/speckit.specify` captures user stories, acceptance tests, and
+  - `/speckit-specify` captures user stories, acceptance tests, and
     success criteria **before** implementation.
-  - `/speckit.tasks` turns the spec into granular, checkable tasks.
+  - `/speckit-tasks` turns the spec into granular, checkable tasks.
 - **Enables TDD-ish behavior for agents**:
   - Tasks can explicitly require tests or validation steps before code.
-  - `/speckit.implement` walks tasks in order, ensuring test/verification
+  - `/speckit-implement` walks tasks in order, ensuring test/verification
     tasks aren’t skipped.
 - **Protects against AI “free-styling” a feature**:
   - Assistants are guided by `spec.md`, `plan.md`, and `tasks.md` instead
@@ -79,7 +79,7 @@ can follow safely.
 - Create a **bd feature issue** to capture intent and acceptance criteria.
 - Use Spec Kit to generate:
   - Spec → plan → tasks → implementation.
-- AI assistants (Windsurf, Claude Code) work **inside** this structure:
+- AI assistants (Claude Code) work **inside** this structure:
   - Use `/speckit.*` commands
   - Always tie work back to bd issues and Spec Kit feature directories.
 - Result: every change can be traced from bd issue → Spec Kit docs → code/PR.
@@ -97,15 +97,13 @@ can follow safely.
 
 - Run `bd --version` to confirm the CLI is available.
 
-## 5a. Installing bd MCP Server for AI Assistants
+## 5a. Installing bd MCP Server for Claude Code
 
-- Install the **beads MCP server** to enable Claude Code and Windsurf to use bd functions directly:
+- Install the **beads MCP server** to enable Claude Code to use bd functions directly:
 
   ```bash
   pip install beads-mcp
   ```
-
-### For Claude Code
 
 - Add to your Claude Code MCP config (e.g., `~/.config/claude/config.json`):
 
@@ -122,24 +120,6 @@ can follow safely.
 
 - Restart Claude Code to load the MCP server.
 - Verify by checking that `mcp__plugin_beads_beads__*` functions are available.
-
-### For Windsurf
-
-- Add to your Windsurf MCP config (e.g., `~/.codeium/windsurf/mcp_settings.json`):
-
-  ```json
-  {
-    "mcpServers": {
-      "beads": {
-        "command": "beads-mcp",
-        "args": []
-      }
-    }
-  }
-  ```
-
-- Restart Windsurf to load the MCP server.
-- Verify by checking that bd MCP functions are available in Windsurf's tool palette.
 
 ## 6. Initializing and Using bd in a Repo (T014)
 
@@ -183,7 +163,7 @@ can follow safely.
   specify check
   ```
 
-- Use `specify check` to verify required tools (git, Claude Code, Windsurf, etc.) are available.
+- Use `specify check` to verify required tools (git, Claude Code, etc.) are available.
 
 ## 8. One-Time Usage via uvx (T016)
 
@@ -196,20 +176,18 @@ can follow safely.
 
 - Prefer the persistent `uv tool install` route for long-term use; use `uvx` when you want to test Spec Kit without modifying your global toolchain.
 
-## 9. Initializing Spec Kit for Claude Code and Windsurf (T017)
+## 9. Initializing Spec Kit for Claude Code (T017)
 
 - From the repository root (this project has already done this):
 
   ```bash
   specify init --here --ai claude
-  specify init --here --ai windsurf
   ```
 
 - When the directory is not empty, Specify will warn and ask for confirmation before merging template files.
 - After initialization, you should see:
   - `.specify/` (Spec Kit internals and templates)
-  - `.windsurf/workflows/speckit.*.md`
-  - Agent-specific files for Claude Code.
+  - Agent-specific files for Claude Code (`.claude/commands/speckit.*.md`).
 
 ## 10. Verifying bd and Spec Kit Integration (T018)
 
@@ -220,32 +198,30 @@ can follow safely.
   specify check
   ```
 
-- Open the repo in Windsurf and Claude Code and verify the following slash commands exist:
-  - `/speckit.constitution`
-  - `/speckit.specify`
-  - `/speckit.plan`
-  - `/speckit.tasks`
-  - `/speckit.implement`
+- Open the repo in Claude Code and verify the following slash commands exist:
+  - `/speckit-constitution`
+  - `/speckit-specify`
+  - `/speckit-plan`
+  - `/speckit-tasks`
+  - `/speckit-implement`
 
-- Confirm that `.specify/`, `.windsurf/workflows/`, and any agent-specific files are present in the repo.
+- Confirm that `.specify/` and the agent-specific files are present in the repo.
 
 ## 11. Making Spec Kit Use bd for All Tasks
 
-- In this repository, the Spec Kit workflows for tasks and implementation are **bd-aware**:
-  - `.windsurf/workflows/speckit.tasks.md` creates a bd feature issue and per-task bd issues from `tasks.md`.
-  - `.windsurf/workflows/speckit.implement.md` updates the corresponding bd issues as tasks move to `in_progress` and `closed`.
+- In this repository, the Spec Kit commands for tasks and implementation are **bd-aware**:
+  - `plugins/shiv-speckit/commands/speckit-tasks.md` creates a bd feature issue and per-task bd issues from `tasks.md`.
+  - `plugins/shiv-speckit/commands/speckit-implement.md` updates the corresponding bd issues as tasks move to `in_progress` and `closed`.
 
 - To enable the same behavior in another repo:
   - Ensure `bd` is installed and initialized in the repo (`bd init`).
-  - Initialize Spec Kit (`specify init --here --ai claude` / `--ai windsurf`).
-  - Copy or adapt the bd-aware workflow files from this project:
-    - `.windsurf/workflows/speckit.tasks.md`
-    - `.windsurf/workflows/speckit.implement.md`
-  - Open the repo in Windsurf or Claude Code and run `/speckit.tasks` and `/speckit.implement` from the feature directory.
+  - Initialize Spec Kit (`specify init --here --ai claude`).
+  - Install the `shiv-speckit` plugin (see [README.md](../../README.md)) so the bd-aware commands are available.
+  - Run `/speckit-tasks` and `/speckit-implement` from the feature directory.
 
-- Result: every Spec Kit task is backed by a bd issue, and progress through `/speckit.implement` is reflected directly in bd.
+- Result: every Spec Kit task is backed by a bd issue, and progress through `/speckit-implement` is reflected directly in bd.
 
-## 12. Example Workflow with Multiple Team Members and Assistants (T022–T024)
+## 12. Example Workflow with Multiple Team Members (T022–T024)
 
 **Example feature**: "Link onboarding deck from main README" (see research.md).
 
@@ -260,38 +236,38 @@ can follow safely.
      - Spec Kit feature directory name
      - Commit messages / PR titles
 
-2. **Run `/speckit.specify` from Windsurf (T022)**
-   - Engineer A opens the repo in **Windsurf**.
+2. **Run `/speckit-specify` (T022)**
+   - Engineer A opens the repo in **Claude Code**.
    - From the root or an appropriate context, they run:
 
      ```text
-     /speckit.specify Link onboarding deck from main README
+     /speckit-specify Link onboarding deck from main README
      ```
 
    - Result:
      - A new feature directory `specs/NNN-link-onboarding-deck/` is created.
      - `spec.md` describes the example feature and references `<EXAMPLE_ID>`.
 
-3. **Run `/speckit.plan` and `/speckit.tasks` from Claude Code (T023)**
+3. **Run `/speckit-plan` and `/speckit-tasks` (T023)**
    - Engineer B opens the same repo in **Claude Code**.
    - In the new feature directory, they run:
 
      ```text
-     /speckit.plan
-     /speckit.tasks
+     /speckit-plan
+     /speckit-tasks
      ```
 
    - Result:
      - `plan.md` captures the implementation approach.
-     - `tasks.md` lists concrete tasks; bd-aware `/speckit.tasks` creates bd task issues linked to `<EXAMPLE_ID>`.
+     - `tasks.md` lists concrete tasks; bd-aware `/speckit-tasks` creates bd task issues linked to `<EXAMPLE_ID>`.
 
-4. **Run `/speckit.implement` with both assistants (T024)**
-   - Engineers A and B (or their assistants) pick tasks from `tasks.md`:
-     - Windsurf focuses on code/doc changes.
-     - Claude Code focuses on tests or additional docs.
+4. **Run `/speckit-implement` (T024)**
+   - Engineers A and B pick tasks from `tasks.md` in their own Claude Code sessions:
+     - One focuses on code/doc changes.
+     - The other focuses on tests or additional docs.
    - Each task:
      - Is marked `[X]` in `tasks.md` when done.
-     - Has its corresponding bd issue moved to `in_progress` then `closed` by the bd-aware `/speckit.implement` workflow.
+     - Has its corresponding bd issue moved to `in_progress` then `closed` by the bd-aware `/speckit-implement` command.
    - Commits and PRs reference `<EXAMPLE_ID>` and the feature directory path.
 
 ## 13. Alignment with the Project Constitution (T025)
@@ -302,10 +278,10 @@ can follow safely.
   - Parent/child relationships between the feature and tasks are explicit.
 - **Quality gates**:
   - Checklists and success criteria in the spec must be satisfied.
-  - `/speckit.implement` enforces task completion and bd status updates.
-- **Multi-member, multi-assistant safe**:
-  - Multiple engineers and assistants can collaborate without losing traceability.
-  - The combination of bd + Spec Kit ensures a shared, auditable workflow across tools.
+  - `/speckit-implement` enforces task completion and bd status updates.
+- **Multi-member safe**:
+  - Multiple engineers can collaborate without losing traceability.
+  - The combination of bd + Spec Kit ensures a shared, auditable workflow.
 
 ## 14. Working with JIRA Stories (INVEST + Gherkin + DoD)
 
@@ -327,21 +303,21 @@ can follow safely.
    ```
 
 2. **Create Spec from JIRA**:
-   - Run `/speckit.specify` with JIRA user story, Gherkin scenarios, and DoD
+   - Run `/speckit-specify` with JIRA user story, Gherkin scenarios, and DoD
    - Spec Kit converts this into structured `spec.md`
 
 3. **Generate tasks**:
-   - `/speckit.plan` creates technical design
-   - `/speckit.tasks` generates tasks and bd task issues
+   - `/speckit-plan` creates technical design
+   - `/speckit-tasks` generates tasks and bd task issues
 
 4. **Implement**:
-   - `/speckit.implement` executes tasks, updating bd status
+   - `/speckit-implement` executes tasks, updating bd status
    - Gherkin scenarios become automated E2E tests
 
 ### Mapping INVEST to Spec Kit
 
-- **Independent**: bd tracks dependencies; `/speckit.tasks` orders by dependencies
-- **Negotiable**: `/speckit.specify` encourages clarification; captured in `spec.md`
+- **Independent**: bd tracks dependencies; `/speckit-tasks` orders by dependencies
+- **Negotiable**: `/speckit-specify` encourages clarification; captured in `spec.md`
 - **Valuable**: User stories from JIRA preserved in spec; acceptance criteria front-and-center
 - **Estimable**: Plan breaks work into concrete tasks with granular estimates
 - **Small**: Spec Kit exposes if story is too large during planning
@@ -367,7 +343,7 @@ Scenario: Successful CSV export
 - Use bd `external_ref` to link back to JIRA
 - Include JIRA ID in branch names: `feature/USER-123-csv-export`
 - Map DoD items to Spec Kit tasks
-- Use `/speckit.clarify` for ambiguous JIRA stories
+- Use `/speckit-clarify` for ambiguous JIRA stories
 - PR links everything: JIRA ID + bd feature ID + Spec Kit directory
 
 ## 15. Complete JIRA Integration Example
@@ -381,15 +357,15 @@ bd create "USER-456: Filter reports by date range" \
 # Output: bd-101
 ```
 
-**Step 2**: Run `/speckit.specify USER-456: Filter reports by date range`
+**Step 2**: Run `/speckit-specify USER-456: Filter reports by date range`
 - Include JIRA story, Gherkin scenarios, DoD checklist
 - Creates `specs/101-filter-reports-by-date-range/spec.md`
 
-**Step 3**: Run `/speckit.plan` → creates `plan.md` with technical approach
+**Step 3**: Run `/speckit-plan` → creates `plan.md` with technical approach
 
-**Step 4**: Run `/speckit.tasks` → creates `tasks.md` and bd issues (bd-102 through bd-110)
+**Step 4**: Run `/speckit-tasks` → creates `tasks.md` and bd issues (bd-102 through bd-110)
 
-**Step 5**: Run `/speckit.implement` → implements tasks, updates bd status
+**Step 5**: Run `/speckit-implement` → implements tasks, updates bd status
 
 **Step 6**: Create PR referencing USER-456, bd-101, and Spec Kit directory
 

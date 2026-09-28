@@ -2,9 +2,6 @@
 *.pptx
 *.pdf
 
-# Ignore _org files
-.windsurf/workflows/_org
-
 # Ignore artifacts in working directories (but keep folder structure)
 specs/*
 scripts/*

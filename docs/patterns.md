@@ -1,6 +1,6 @@
 # Agentic Development Patterns
 
-This document outlines common patterns and best practices for agentic development at Wiser Solutions.
+This document outlines common patterns and best practices for agentic development at Shiv Solutions.
 
 ## Architectural Patterns
 
@@ -142,7 +142,7 @@ AI can assist with:
 
 ## Implementation Examples
 
-Each pattern includes practical implementation examples in the context of Wiser Solutions' technology stack:
+Each pattern includes practical implementation examples in the context of Shiv Solutions' technology stack:
 
 - Node.js
 - NestJS

@@ -1,15 +1,16 @@
 # Epic and Story Workflows - Quick Reference
 
-This repository includes comprehensive Windsurf workflows for creating high-quality Epics and User Stories following the Wiser Solutions standard.
+This repository includes comprehensive Claude Code plugin commands for creating high-quality Epics and User Stories following the Shiv Solutions standard.
 
 ## 🚀 Quick Start
 
-1. **Open this repository in Windsurf IDE**
-2. **Type `/` in chat** to see available workflows
+1. **Install the `shiv-agile` plugin** (see [README.md](./README.md) for the global plugin install)
+2. **Type `/` in Claude Code** to see available commands
 3. **Start creating**:
    - `/create-epic` - Create SMART-compliant Epics
    - `/create-story` - Create INVEST-compliant User Stories
    - `/create-technical-enablement-story` - Create technical work stories
+   - `/create-bugfix` - Create structured bugfix work items
 
 ## 📋 Available Workflows
 
@@ -18,6 +19,7 @@ This repository includes comprehensive Windsurf workflows for creating high-qual
 | `/create-epic` | Create strategic epics | SMART-compliant epic with business justification |
 | `/create-story` | Create user stories | INVEST-compliant story with Gherkin acceptance criteria |
 | `/create-technical-enablement-story` | Create technical work stories | Technical story with modified INVEST principles |
+| `/create-bugfix` | Create bugfix work items | Severity-classified bug report with RCA and test plan |
 | `/story-invest-score` | Analyze story quality | Individual story quality assessment and recommendations |
 | `/story-quality-kpis` | Track team performance | Team-level quality metrics and trends |
 
@@ -53,15 +55,16 @@ This repository includes comprehensive Windsurf workflows for creating high-qual
 ## 🏗️ File Structure
 
 ```
-├── .windsurf/workflows/          # Windsurf workflow files
-│   ├── create-epic.md           # Epic creation workflow
-│   ├── create-story.md          # User story creation workflow
-│   ├── create-technical-enablement-story.md  # Technical story workflow
-│   ├── story-invest-score.md    # Story quality analysis
-│   ├── story-quality-kpis.md    # Team performance tracking
-│   └── agile-rules.md           # Core agile rules and standards
-├── EPIC_STORY_WORKFLOWS.md      # 📖 Comprehensive documentation
-└── README_WORKFLOWS.md          # 📋 This quick reference
+├── plugins/shiv-agile/commands/       # Claude Code plugin commands
+│   ├── create-epic.md                 # Epic creation command
+│   ├── create-story.md                # User story creation command
+│   ├── create-technical-enablement-story.md  # Technical story command
+│   ├── create-bugfix.md               # Bugfix work item command
+│   ├── story-invest-score.md          # Story quality analysis
+│   └── story-quality-kpis.md          # Team performance tracking
+├── plugins/shiv-agile/skills/agile-rules/  # Core agile rules and standards
+├── EPIC_STORY_WORKFLOWS.md            # 📖 Comprehensive documentation
+└── README_WORKFLOWS.md                # 📋 This quick reference
 ```
 
 ## 🎓 Learning Path
@@ -74,7 +77,7 @@ This repository includes comprehensive Windsurf workflows for creating high-qual
 
 ## 🔗 References
 
-- **Wiser Solutions Epic and Story Standard**: Confluence Page ID 4660658177
+- **Shiv Solutions Epic and Story Standard**: Confluence Page ID 4660658177
 - **SMART Criteria**: Specific, Measurable, Achievable, Relevant, Time-bound
 - **INVEST Principles**: Independent, Negotiable, Valuable, Estimable, Small, Testable
 
@@ -86,4 +89,4 @@ This repository includes comprehensive Windsurf workflows for creating high-qual
 
 ---
 
-**Ready to create high-quality Epics and Stories? Start with `/create-epic` in Windsurf!** 🚀
+**Ready to create high-quality Epics and Stories? Start with `/create-epic` in Claude Code!** 🚀

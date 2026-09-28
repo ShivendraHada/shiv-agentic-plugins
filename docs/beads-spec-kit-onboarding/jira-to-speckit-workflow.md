@@ -114,14 +114,14 @@ When a JIRA story is ready for development:
 
 ### Phase 2: Create Spec Kit Feature Directory
 
-Use `/speckit.specify` to create the feature specification from the JIRA story:
+Use `/speckit-specify` to create the feature specification from the JIRA story:
 
-1. **Open your repo in Windsurf or Claude Code**
+1. **Open your repo in Claude Code**
 
-2. **Run `/speckit.specify` with JIRA context**:
+2. **Run `/speckit-specify` with JIRA context**:
 
    ```
-   /speckit.specify USER-123: Export reports to CSV
+   /speckit-specify USER-123: Export reports to CSV
 
    Here's the JIRA story:
 
@@ -157,14 +157,14 @@ Use `/speckit.specify` to create the feature specification from the JIRA story:
    - Any additional technical context or questions
    - Reference to bd feature issue ID and JIRA external_ref
 
-### Phase 3: Technical Planning with `/speckit.plan`
+### Phase 3: Technical Planning with `/speckit-plan`
 
 After the spec is created, generate the implementation plan:
 
 1. **From the feature directory**, run:
 
    ```
-   /speckit.plan
+   /speckit-plan
    ```
 
 2. **Result**: Spec Kit creates:
@@ -178,14 +178,14 @@ After the spec is created, generate the implementation plan:
    - Proposes design decisions aligned with existing architecture
    - Identifies dependencies and potential blockers
 
-### Phase 4: Generate Tasks with `/speckit.tasks`
+### Phase 4: Generate Tasks with `/speckit-tasks`
 
 Convert the plan into actionable, dependency-ordered tasks:
 
 1. **From the feature directory**, run:
 
    ```
-   /speckit.tasks
+   /speckit-tasks
    ```
 
 2. **Result**: Spec Kit creates:
@@ -215,14 +215,14 @@ Convert the plan into actionable, dependency-ordered tasks:
    # All linked to parent bd-42 (the feature issue)
    ```
 
-### Phase 5: Implement with `/speckit.implement`
+### Phase 5: Implement with `/speckit-implement`
 
 Execute the implementation plan with AI assistance:
 
 1. **From the feature directory**, run:
 
    ```
-   /speckit.implement
+   /speckit-implement
    ```
 
 2. **AI assistant behavior**:
@@ -354,12 +354,12 @@ After the PR is merged:
 
 | INVEST Principle | How Spec Kit Supports It |
 |------------------|--------------------------|
-| **Independent** | bd tracks dependencies explicitly; `/speckit.tasks` orders tasks by dependencies |
-| **Negotiable** | `/speckit.specify` encourages clarifying questions; `spec.md` captures final agreement |
+| **Independent** | bd tracks dependencies explicitly; `/speckit-tasks` orders tasks by dependencies |
+| **Negotiable** | `/speckit-specify` encourages clarifying questions; `spec.md` captures final agreement |
 | **Valuable** | User stories from JIRA are preserved in `spec.md`; acceptance criteria remain front-and-center |
-| **Estimable** | `/speckit.plan` breaks work into concrete technical tasks; `tasks.md` provides granular estimates |
+| **Estimable** | `/speckit-plan` breaks work into concrete technical tasks; `tasks.md` provides granular estimates |
 | **Small** | If JIRA story is too large, Spec Kit exposes this during planning; you can split into multiple features |
-| **Testable** | Gherkin scenarios → E2E tests; `/speckit.tasks` ensures test tasks are included; DoD enforces test coverage |
+| **Testable** | Gherkin scenarios → E2E tests; `/speckit-tasks` ensures test tasks are included; DoD enforces test coverage |
 
 ---
 
@@ -486,12 +486,12 @@ Ensure every DoD item has a corresponding task in `tasks.md`:
 | Code reviewed and approved | (handled by PR process, not a task) |
 | Documentation updated | "Update API docs and user guide" |
 
-### 5. Use `/speckit.clarify` for Ambiguity
+### 5. Use `/speckit-clarify` for Ambiguity
 
 If JIRA story is unclear or missing details:
 
 ```
-/speckit.clarify
+/speckit-clarify
 ```
 
 This will:
@@ -553,20 +553,20 @@ bd create "USER-456: Filter reports by date range" \
 # Output: {"id": "bd-101", ...}
 ```
 
-### Step 2: Run `/speckit.specify`
+### Step 2: Run `/speckit-specify`
 
 ```
-/speckit.specify USER-456: Filter reports by date range
+/speckit-specify USER-456: Filter reports by date range
 
 [Include JIRA story, Gherkin, and DoD here]
 ```
 
 **Result**: Creates `specs/101-filter-reports-by-date-range/spec.md`
 
-### Step 3: Run `/speckit.plan`
+### Step 3: Run `/speckit-plan`
 
 ```
-/speckit.plan
+/speckit-plan
 ```
 
 **Result**: Creates `specs/101-filter-reports-by-date-range/plan.md`:
@@ -589,10 +589,10 @@ Add date range filtering to the existing reports feature.
 4. Tests: Unit tests for validation, integration tests for endpoint, E2E for scenarios
 ```
 
-### Step 4: Run `/speckit.tasks`
+### Step 4: Run `/speckit-tasks`
 
 ```
-/speckit.tasks
+/speckit-tasks
 ```
 
 **Result**: Creates `specs/101-filter-reports-by-date-range/tasks.md`:
@@ -613,10 +613,10 @@ Add date range filtering to the existing reports feature.
 
 **bd issues created**: bd-102 through bd-110, all children of bd-101
 
-### Step 5: Run `/speckit.implement`
+### Step 5: Run `/speckit-implement`
 
 ```
-/speckit.implement
+/speckit-implement
 ```
 
 **Result**: AI assistant implements each task in order, closing bd issues as it goes.
@@ -646,11 +646,11 @@ gh pr create --title "USER-456: Filter reports by date range" --body "..."
 
 ### Q: What if JIRA story is too vague?
 
-Use `/speckit.clarify` to identify gaps, then bring questions to product owner. Update JIRA with answers before proceeding to `/speckit.plan`.
+Use `/speckit-clarify` to identify gaps, then bring questions to product owner. Update JIRA with answers before proceeding to `/speckit-plan`.
 
 ### Q: What if Gherkin scenarios are missing from JIRA?
 
-You can draft them during `/speckit.specify`:
+You can draft them during `/speckit-specify`:
 - AI assistant will suggest scenarios based on user story
 - Add them to `spec.md`
 - Recommend adding them back to JIRA for future reference
@@ -658,10 +658,10 @@ You can draft them during `/speckit.specify`:
 ### Q: What if the JIRA story changes mid-implementation?
 
 1. Update `spec.md` to reflect new requirements
-2. Run `/speckit.plan` again (or manually update `plan.md`)
-3. Run `/speckit.tasks` to generate new tasks
+2. Run `/speckit-plan` again (or manually update `plan.md`)
+3. Run `/speckit-tasks` to generate new tasks
 4. Create new bd task issues for the additional work
-5. Continue with `/speckit.implement`
+5. Continue with `/speckit-implement`
 
 ### Q: How do I handle dependencies between JIRA stories?
 

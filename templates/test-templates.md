@@ -1,6 +1,6 @@
 # Test Templates
 
-This document provides templates for creating tests using the agentic TDD workflow. These templates follow Wiser Solutions' coding standards and best practices.
+This document provides templates for creating tests using the agentic TDD workflow. These templates follow Shiv Solutions' coding standards and best practices.
 
 ## Unit Test Templates
 

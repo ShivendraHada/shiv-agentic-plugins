@@ -1,8 +1,0 @@
-{
-  "name": "wiser-tools",
-  "description": "Wiser plugin management utilities: sync plugins, check status, detect local overrides, and scaffold new plugins",
-  "author": {
-    "name": "Wiser Solutions",
-    "email": "engineering@wisersolutions.com"
-  }
-}

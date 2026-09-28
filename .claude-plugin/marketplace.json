@@ -1,65 +1,65 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
-  "name": "wiser-plugins",
-  "description": "Wiser Solutions development plugins for agile workflows, TDD, spec-driven development, and plugin management",
+  "name": "shiv-plugins",
+  "description": "Shiv Solutions development plugins for agile workflows, TDD, spec-driven development, and plugin management",
   "owner": {
-    "name": "Wiser Solutions",
-    "email": "engineering@wisersolutions.com"
+    "name": "Shiv Solutions",
+    "email": "engineering@shivsolutions.com"
   },
   "plugins": [
     {
-      "name": "wiser-agile",
-      "description": "Agile workflows: create epics, stories, auto-groom, INVEST scoring",
-      "version": "1.0.0",
+      "name": "shiv-agile",
+      "description": "Shiv Solutions agile workflows: create epics, stories, technical enablement stories, bugfixes, auto-groom sprints, score INVEST criteria, and transform notes into work items. Jira integration with configurable defaults.",
+      "version": "1.2.0",
       "author": {
-        "name": "Wiser Solutions",
-        "email": "engineering@wisersolutions.com"
+        "name": "Shiv Solutions",
+        "email": "engineering@shivsolutions.com"
       },
-      "source": "./plugins/wiser-agile",
+      "source": "./plugins/shiv-agile",
       "category": "productivity"
     },
     {
-      "name": "wiser-dev",
-      "description": "Development workflows: TDD, JIRA-integrated TDD, Terraform, PR review",
+      "name": "shiv-dev",
+      "description": "Shiv Solutions development workflows: agentic TDD with human checkpoints, JIRA-integrated TDD, Jira-to-Terraform infrastructure pipelines, and automated PR code review",
       "version": "1.0.0",
       "author": {
-        "name": "Wiser Solutions",
-        "email": "engineering@wisersolutions.com"
+        "name": "Shiv Solutions",
+        "email": "engineering@shivsolutions.com"
       },
-      "source": "./plugins/wiser-dev",
+      "source": "./plugins/shiv-dev",
       "category": "development"
     },
     {
-      "name": "wiser-speckit",
-      "description": "Specification toolkit: specify, clarify, plan, implement, analyze",
+      "name": "shiv-speckit",
+      "description": "Speckit specification toolkit: specify features, clarify requirements, plan implementations, generate tasks, implement with bd tracking, analyze cross-artifact consistency, generate checklists, manage project constitutions, and export tasks to GitHub issues",
       "version": "1.0.0",
       "author": {
-        "name": "Wiser Solutions",
-        "email": "engineering@wisersolutions.com"
+        "name": "Shiv Solutions",
+        "email": "engineering@shivsolutions.com"
       },
-      "source": "./plugins/wiser-speckit",
+      "source": "./plugins/shiv-speckit",
       "category": "productivity"
     },
     {
-      "name": "wiser-tools",
-      "description": "Plugin management: sync and status utilities",
+      "name": "shiv-tools",
+      "description": "Shiv plugin management utilities: sync plugins, check status, detect local overrides, and scaffold new plugins",
       "version": "1.0.0",
       "author": {
-        "name": "Wiser Solutions",
-        "email": "engineering@wisersolutions.com"
+        "name": "Shiv Solutions",
+        "email": "engineering@shivsolutions.com"
       },
-      "source": "./plugins/wiser-tools",
+      "source": "./plugins/shiv-tools",
       "category": "utilities"
     },
     {
-      "name": "wiser-design-docs",
-      "description": "Design documentation for Confluence: create, sync, and manage Technical Architecture, Detailed Design, ADR, Runbook, and API Design documents from Jira context",
+      "name": "shiv-design-docs",
+      "description": "Design documentation toolkit for Confluence: create Technical Architecture, Detailed Design, ADR, Runbook, and API Design documents from Jira epics/tickets. Supports bidirectional sync, template extraction, and Confluence-native formatting.",
       "version": "1.0.0",
       "author": {
-        "name": "Wiser Solutions",
-        "email": "engineering@wisersolutions.com"
+        "name": "Shiv Solutions",
+        "email": "engineering@shivsolutions.com"
       },
-      "source": "./plugins/wiser-design-docs",
+      "source": "./plugins/shiv-design-docs",
       "category": "documentation"
     }
   ]

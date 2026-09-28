@@ -1,0 +1,9 @@
+{
+  "name": "shiv-dev",
+  "version": "1.0.0",
+  "description": "Shiv Solutions development workflows: agentic TDD with human checkpoints, JIRA-integrated TDD, Jira-to-Terraform infrastructure pipelines, and automated PR code review",
+  "author": {
+    "name": "Shiv Solutions",
+    "email": "engineering@shivsolutions.com"
+  }
+}

@@ -1,6 +1,6 @@
 # Epic and Story Workflows - Developer Guide
 
-This comprehensive guide covers installing and using the Epic and Story management workflows with **Claude Code** or **Windsurf IDE**, including backlog management using the Wiser Solutions standard.
+This comprehensive guide covers installing and using the Epic and Story management workflows with **Claude Code**, including backlog management using the Shiv Solutions standard.
 
 ## Table of Contents
 1. [Quick Start](#quick-start)
@@ -18,24 +18,17 @@ This comprehensive guide covers installing and using the Epic and Story manageme
 
 ### TL;DR - Get Started in 5 Minutes
 
-#### Using Claude Code (Recommended)
-1. **Install commands**:
+#### Using Claude Code
+1. **Install the plugin globally**:
    ```bash
-   curl -fsSL https://raw.githubusercontent.com/WiserSolutions/agentic-development/main/install-claude-commands.sh | bash
+   curl -fsSL https://raw.githubusercontent.com/shivendrahada/agentic-development/main/install-shiv-plugins.sh | bash -s install
    ```
 2. **Type `/` in Claude Code** to see available commands
 3. **Create an Epic**: `/create-epic` → Follow SMART criteria prompts
 4. **Create Stories**: `/create-story` → Follow INVEST principles
 5. **For Technical Work**: `/create-technical-enablement-story`
-6. **Check Quality**: `/story-invest-score [story-id]`
-
-#### Using Windsurf IDE
-1. **Open Windsurf IDE** in this repository
-2. **Type `/` in chat** to see available workflows
-3. **Create an Epic**: `/create-epic` → Follow SMART criteria prompts
-4. **Create Stories**: `/create-story` → Follow INVEST principles
-5. **For Technical Work**: `/create-technical-enablement-story`
-6. **Check Quality**: `/story-invest-score [story-id]`
+6. **For Bugs**: `/create-bugfix`
+7. **Check Quality**: `/story-invest-score [story-id]`
 
 ### Available Commands
 | Command | Description |
@@ -43,6 +36,7 @@ This comprehensive guide covers installing and using the Epic and Story manageme
 | `/create-epic` | Create SMART-compliant Epics |
 | `/create-story` | Create INVEST-compliant User Stories |
 | `/create-technical-enablement-story` | Create technical work stories |
+| `/create-bugfix` | Create structured bugfix work items |
 | `/story-invest-score` | Analyze individual story quality |
 | `/story-quality-kpis` | Track team performance metrics |
 | `/notes-to-work-item` | Transform notes into epics/stories |
@@ -50,29 +44,26 @@ This comprehensive guide covers installing and using the Epic and Story manageme
 ## Installation
 
 ### Prerequisites
-- **Claude Code** or **Windsurf IDE** installed
+- **Claude Code** installed
 - Access to this agentic-development repository
-- Confluence access for the Wiser Solutions Epic and Story Standard (Page ID: 4660658177)
+- Confluence access for the Shiv Solutions Epic and Story Standard (Page ID: 4660658177)
 
-### Option A: Claude Code Installation (Recommended)
+### Installing the Plugin
 
 #### Quick Install (One Command)
 ```bash
-curl -fsSL https://raw.githubusercontent.com/WiserSolutions/agentic-development/main/install-claude-commands.sh | bash
+curl -fsSL https://raw.githubusercontent.com/shivendrahada/agentic-development/main/install-shiv-plugins.sh | bash -s install
 ```
 
 #### Manual Installation
 ```bash
 # Clone repository
-git clone --depth 1 git@github.com:WiserSolutions/agentic-development.git temp-commands
-
-# Create commands directory and copy
-mkdir -p .claude/commands
-cp temp-commands/claude-commands/*.md .claude/commands/
-
-# Cleanup
-rm -rf temp-commands
+git clone --depth 1 git@github.com:shivendrahada/agentic-development.git temp-plugins
+./temp-plugins/install-shiv-plugins.sh install
+rm -rf temp-plugins
 ```
+
+This registers all Shiv plugins (including `shiv-agile`) globally, so their commands are available in every project. See [README.md](./README.md) for the full plugin list and management commands (`update`, `status`, `migrate`).
 
 #### Verify Installation
 - Type `/` in Claude Code
@@ -80,6 +71,7 @@ rm -rf temp-commands
   - `/create-epic`
   - `/create-story`
   - `/create-technical-enablement-story`
+  - `/create-bugfix`
   - `/story-invest-score`
   - `/story-quality-kpis`
 
@@ -105,54 +97,25 @@ rm -rf temp-commands
 /story-invest-score PROJ-123
 ```
 
-### Option B: Windsurf IDE Installation
-
-1. **Clone Repository** (if not already done)
-   ```bash
-   git clone <this-repository-url>
-   cd agentic-development
-   ```
-
-2. **Open in Windsurf**
-   - Launch Windsurf IDE
-   - Open this repository as workspace
-   - Workflows are automatically loaded from `.windsurf/workflows/`
-
-3. **Verify Installation**
-   - Type `/` in Windsurf chat
-   - Confirm these workflows appear:
-     - `/create-epic`
-     - `/create-story`
-     - `/create-technical-enablement-story`
-     - `/story-invest-score`
-     - `/story-quality-kpis`
-
 ### File Structure
 ```
-├── .claude/commands/                     # Claude Code commands
+├── plugins/shiv-agile/commands/          # Claude Code plugin commands (source of truth)
 │   ├── create-epic.md
 │   ├── create-story.md
 │   ├── create-technical-enablement-story.md
+│   ├── create-bugfix.md
 │   ├── story-invest-score.md
 │   ├── story-quality-kpis.md
-│   └── notes-to-work-item.md
-├── claude-commands/                      # Source commands for distribution
-│   └── README.md                         # Claude Code documentation
-├── .windsurf/workflows/                  # Windsurf workflows
-│   ├── create-epic.md
-│   ├── create-story.md
-│   ├── create-technical-enablement-story.md
-│   ├── story-invest-score.md
-│   ├── story-quality-kpis.md
-│   └── technical-enablement-rules.md
-├── install-claude-commands.sh            # Installation script
+│   └── auto-groom.md
+├── plugins/shiv-agile/skills/agile-rules/  # Shared standards applied by all commands above
+├── install-shiv-plugins.sh               # Global plugin installation script
 └── EPIC_STORY_WORKFLOWS.md              # This documentation
 ```
 
 ## Workflow Overview
 
 ### Standards Reference
-All workflows implement the **Wiser Solutions Epic and Story Standard** (Confluence Page ID: 4660658177):
+All workflows implement the **Shiv Solutions Epic and Story Standard** (Confluence Page ID: 4660658177):
 
 | **Standard** | **Requirement** |
 |--------------|-----------------|
@@ -229,7 +192,7 @@ The workflow generates a complete epic:
 # Epic: Customer Self-Service Portal
 
 ## Epic Statement
-As Wiser's customer support organization, we need a comprehensive self-service portal so that we can reduce support ticket volume by 40% and improve customer satisfaction scores.
+As Shiv's customer support organization, we need a comprehensive self-service portal so that we can reduce support ticket volume by 40% and improve customer satisfaction scores.
 
 ## Business Justification
 Currently, 60% of support tickets are for routine inquiries that customers could handle themselves. This creates unnecessary load on our support team and delays response times for complex issues.
@@ -733,19 +696,11 @@ Recommendations:
 #### Command Not Appearing in Claude Code
 **Problem**: `/create-epic` or other commands don't appear in Claude Code
 **Solutions**:
-1. Verify commands are installed in `.claude/commands/` directory
-2. Re-run the installation script: `./install-claude-commands.sh`
+1. Verify the plugin is installed: `./install-shiv-plugins.sh status`
+2. Re-run the installation script: `./install-shiv-plugins.sh update`
 3. Check that command files have `.md` extension
 4. Restart Claude Code session
-5. Verify file permissions: `ls -la .claude/commands/`
-
-#### Command Not Appearing in Windsurf
-**Problem**: `/create-epic` or other workflows don't appear in Windsurf
-**Solutions**:
-1. Verify you're in the correct repository workspace
-2. Check that workflow files exist in `.windsurf/workflows/`
-3. Restart Windsurf IDE
-4. Ensure workflows have proper YAML frontmatter
+5. Check for a stale local override shadowing the plugin command: `ls -la .claude/commands/`
 
 #### Epic Scoring Low on SMART Criteria
 **Problem**: Epic scores <20/25 on SMART validation
@@ -796,10 +751,9 @@ Recommendations:
 
 #### Resources
 1. **Confluence Standard**: Page ID 4660658177 - Authoritative source
-2. **Claude Code Commands**: `.claude/commands/` - Command implementations
-3. **Windsurf Workflows**: `.windsurf/workflows/` - Workflow implementations
-4. **Claude Commands README**: `claude-commands/README.md` - Installation guide
-5. **This Documentation**: `EPIC_STORY_WORKFLOWS.md` - Usage guide
+2. **Claude Code Commands**: `plugins/shiv-agile/commands/` - Command implementations
+3. **README**: `README.md` - Plugin install and management guide
+4. **This Documentation**: `EPIC_STORY_WORKFLOWS.md` - Usage guide
 
 #### Support Process
 1. Check this documentation first
@@ -810,7 +764,7 @@ Recommendations:
 
 ## Conclusion
 
-These workflows implement the Wiser Solutions Epic and Story Standard to ensure consistent, high-quality backlog management across all engineering teams. Available for both **Claude Code** and **Windsurf IDE**, teams can:
+These workflows implement the Shiv Solutions Epic and Story Standard to ensure consistent, high-quality backlog management across all engineering teams. Available in **Claude Code**, teams can:
 
 - Create SMART-compliant Epics that align with business strategy
 - Develop INVEST-compliant User Stories that deliver measurable value
@@ -823,5 +777,5 @@ Remember: The goal is consistent, sustainable delivery of value, not perfect sco
 ---
 
 **Last Updated**: December 2025  
-**Standard Reference**: Wiser Solutions Epic and Story Standard (Confluence Page ID: 4660658177)  
+**Standard Reference**: Shiv Solutions Epic and Story Standard (Confluence Page ID: 4660658177)  
 **Workflow Version**: 1.0

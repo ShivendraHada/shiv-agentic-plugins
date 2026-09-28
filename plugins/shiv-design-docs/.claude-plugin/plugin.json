@@ -1,0 +1,9 @@
+{
+  "name": "shiv-design-docs",
+  "version": "1.0.0",
+  "description": "Design documentation toolkit for Confluence: create Technical Architecture, Detailed Design, ADR, Runbook, and API Design documents from Jira epics/tickets. Supports bidirectional sync, template extraction, and Confluence-native formatting.",
+  "author": {
+    "name": "Shiv Solutions",
+    "email": "engineering@shivsolutions.com"
+  }
+}

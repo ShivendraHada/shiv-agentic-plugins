@@ -1,6 +1,6 @@
 # Agentic Development
 
-This repository contains tools, guidelines, and resources for implementing agentic development practices across Wiser Solutions' engineering teams. Agentic development leverages AI-assisted workflows to enhance productivity, quality, and consistency in software development processes.
+This repository contains tools, guidelines, and resources for implementing agentic development practices across Shiv Solutions' engineering teams. Agentic development leverages AI-assisted workflows to enhance productivity, quality, and consistency in software development processes.
 
 ## What is Agentic Development?
 
@@ -23,103 +23,95 @@ Choose your preferred AI assistant:
 
 ### Option A: Claude Code — Global Plugins (Recommended)
 
-Install all Wiser plugins globally so they work in every project:
+Install all Shiv plugins globally so they work in every project:
 
 ```bash
 # One-time global install
-curl -fsSL https://raw.githubusercontent.com/WiserSolutions/agentic-development/main/install-wiser-plugins.sh | bash -s install
+curl -fsSL https://raw.githubusercontent.com/shivendrahada/agentic-development/main/install-shiv-plugins.sh | bash -s install
 ```
 
 Or clone and run manually:
+
 ```bash
-git clone --depth 1 git@github.com:WiserSolutions/agentic-development.git temp-plugins
-./temp-plugins/install-wiser-plugins.sh install
+git clone --depth 1 git@github.com:shivendrahada/agentic-development.git temp-plugins
+./temp-plugins/install-shiv-plugins.sh install
 rm -rf temp-plugins
 ```
 
 After installation, use `/` in Claude Code to see all available commands:
 
-#### Agile Commands (wiser-agile plugin)
-| Command | Description |
-|---------|-------------|
-| `/create-epic` | Create SMART-compliant epics |
-| `/create-story` | Create INVEST-compliant user stories |
-| `/create-technical-enablement-story` | Create technical enablement stories |
-| `/story-invest-score` | Analyze story quality against INVEST |
-| `/story-quality-kpis` | Track team performance metrics |
-| `/auto-groom` | Auto-groom sprint stories |
-| `/notes-to-work-item` | Transform notes into epics/stories |
+#### Agile Commands (shiv-agile plugin)
 
-#### Development Commands (wiser-dev plugin)
-| Command | Description |
-|---------|-------------|
-| `/tdd-workflow` | Test-Driven Development with AI assistance |
-| `/agentic-tdd-jira` | TDD workflow with JIRA integration |
-| `/agentic-terraform` | Jira-to-Terraform infrastructure workflow |
-| `/review-pr` | Automated PR code review with line-level GitHub comments |
+Create and score Jira work items (epics, stories, technical enablement, bugfixes) against Shiv Solutions standards, and groom sprints for quality.
 
-#### Spec Kit Commands (wiser-speckit plugin)
-| Command | Description |
-|---------|-------------|
-| `/speckit-specify` | Create feature specifications |
-| `/speckit-clarify` | Clarify underspecified areas |
-| `/speckit-plan` | Generate implementation plans |
-| `/speckit-tasks` | Break down into tasks |
-| `/speckit-implement` | Execute implementation |
-| `/speckit-analyze` | Cross-artifact consistency analysis |
-| `/speckit-checklist` | Generate verification checklists |
-| `/speckit-constitution` | Manage project governance |
-| `/speckit-taskstoissues` | Export tasks to GitHub issues |
+| Command                              | Description                                                           |
+| ------------------------------------ | --------------------------------------------------------------------- |
+| `/create-epic`                       | Create SMART-compliant epics                                          |
+| `/create-story`                      | Create INVEST-compliant user stories                                  |
+| `/create-technical-enablement-story` | Create technical enablement stories                                   |
+| `/create-bugfix`                     | Create structured bugfix work items with severity, RCA, and test plan |
+| `/story-invest-score`                | Analyze story quality against INVEST                                  |
+| `/story-quality-kpis`                | Track team performance metrics                                        |
+| `/auto-groom`                        | Auto-groom sprint stories                                             |
+| `/notes-to-work-item`                | Transform notes into epics/stories                                    |
 
-#### Management Commands (wiser-tools plugin)
-| Command | Description |
-|---------|-------------|
-| `/wiser-sync` | Update plugins from central repo |
-| `/wiser-status` | Show installed plugins and overrides |
+#### Development Commands (shiv-dev plugin)
+
+Drive TDD, JIRA-integrated implementation, Terraform provisioning, and automated PR review from Claude Code.
+
+| Command              | Description                                              |
+| -------------------- | -------------------------------------------------------- |
+| `/tdd-workflow`      | Test-Driven Development with AI assistance               |
+| `/agentic-tdd-jira`  | TDD workflow with JIRA integration                       |
+| `/agentic-terraform` | Jira-to-Terraform infrastructure workflow                |
+| `/review-pr`         | Automated PR code review with line-level GitHub comments |
+
+#### Spec Kit Commands (shiv-speckit plugin)
+
+Run the spec-driven development lifecycle (specify, plan, tasks, implement, analyze) with bd issues tracked automatically at every stage.
+
+| Command                  | Description                         |
+| ------------------------ | ----------------------------------- |
+| `/speckit-specify`       | Create feature specifications       |
+| `/speckit-clarify`       | Clarify underspecified areas        |
+| `/speckit-plan`          | Generate implementation plans       |
+| `/speckit-tasks`         | Break down into tasks               |
+| `/speckit-implement`     | Execute implementation              |
+| `/speckit-analyze`       | Cross-artifact consistency analysis |
+| `/speckit-checklist`     | Generate verification checklists    |
+| `/speckit-constitution`  | Manage project governance           |
+| `/speckit-taskstoissues` | Export tasks to GitHub issues       |
+
+#### Design Documentation Commands (shiv-design-docs plugin)
+
+Create, sync, and pull design documents (Technical Architecture, ADRs, Runbooks, API Design) between Confluence and local markdown from Jira context.
+
+| Command       | Description                                                                                                                           |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `/design-doc` | Create or update design documents (Technical Architecture, Detailed Design, ADR, Runbook, API Design) on Confluence from Jira context |
+| `/list-docs`  | List local design documents and their Confluence sync status                                                                          |
+| `/pull-doc`   | Pull a Confluence design document to local markdown                                                                                   |
+
+#### Management Commands (shiv-tools plugin)
+
+Keep the plugin installation itself in sync, check its status, and scaffold new plugins.
+
+| Command          | Description                          |
+| ---------------- | ------------------------------------ |
+| `/shiv-sync`     | Update plugins from central repo     |
+| `/shiv-status`   | Show installed plugins and overrides |
+| `/create-plugin` | Scaffold a new Claude Code plugin    |
 
 **Managing plugins:**
-```bash
-./install-wiser-plugins.sh update     # Update to latest
-./install-wiser-plugins.sh list       # List installed plugins
-./install-wiser-plugins.sh status     # Detect local overrides
-./install-wiser-plugins.sh migrate    # Clean up per-project duplicates
-```
-
-**Local overrides:** To customize any command for a specific project, create a file with the same name in your project's `.claude/commands/` directory. The local version takes priority.
-
-### Option A (Legacy): Per-Project Install
-
-> **Deprecated:** Use the global plugin install above instead.
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/WiserSolutions/agentic-development/main/install-claude-commands.sh | bash
+./install-shiv-plugins.sh update     # Update to latest
+./install-shiv-plugins.sh list       # List installed plugins
+./install-shiv-plugins.sh status     # Detect local overrides
+./install-shiv-plugins.sh migrate    # Clean up per-project duplicates
 ```
 
-### Option B: Windsurf IDE
-
-The `sync-workflows` workflow will help you bootstrap the agentic development workflows into your project.
-
-#### Prerequisites
-- SSH access to WiserSolutions/agentic-development repository
-- Windsurf IDE installed
-
-#### Step 1: Bootstrap the sync workflow
-
-From the root of your project, run:
-
-```bash
-# Bootstrap sync-workflows.md (minimal clone)
-git clone --depth 1 git@github.com:WiserSolutions/agentic-development.git temp-sync && \
-mkdir -p .windsurf/workflows && \
-cp temp-sync/windsurf/workflows/sync-workflows.md .windsurf/workflows && \
-rm -rf temp-sync
-```
-
-#### Step 2: Sync workflows
-
-Run the sync-workflows workflow by typing `/sync-workflows` in cascade.
-
-If you want to run it without having to respond to the prompts, you can edit the `sync-workflows.md` file in `.windsurf/workflows` and set the *Execution Mode* to **Turbo Mode**.
+**Local overrides:** To customize any command for a specific project, create a file with the same name in your project's `.claude/commands/` directory. The local version takes priority. Run `./install-shiv-plugins.sh migrate` to clean up local copies that have drifted out of sync with the global plugin.
 
 ## Agentic Development Workflows
 
@@ -127,16 +119,18 @@ This repository includes several agentic workflows for different development sce
 
 ### 1. Epic and Story Workflows ⭐ **NEW**
 
-Comprehensive workflows for creating high-quality Epics and User Stories following the Wiser Solutions standard.
+Comprehensive workflows for creating high-quality Epics and User Stories following the Shiv Solutions standard.
 
 #### Key Features:
+
 - **Epic Creation**: SMART-compliant epics with business justification
 - **User Story Creation**: INVEST-compliant stories with Gherkin acceptance criteria
 - **Technical Enablement Stories**: Specialized format for technical work
 - **Quality Tracking**: Individual story analysis and team performance KPIs
-- **Standards Compliance**: Implements Wiser Solutions Epic and Story Standard
+- **Standards Compliance**: Implements Shiv Solutions Epic and Story Standard
 
 #### Quick Start:
+
 ```
 /create-epic          # Create strategic epics
 /create-story         # Create user stories
@@ -151,6 +145,7 @@ Comprehensive workflows for creating high-quality Epics and User Stories followi
 A structured approach combining Test-Driven Development with AI assistance and human validation checkpoints.
 
 #### Key Steps:
+
 - Requirement extraction and validation
 - AI-assisted test creation with human review
 - Implementation guided by tests
@@ -164,6 +159,7 @@ A structured approach combining Test-Driven Development with AI assistance and h
 AI-assisted code review process that helps identify issues, suggest improvements, and ensure adherence to best practices.
 
 #### Key Features:
+
 - Automated code quality checks
 - Security vulnerability detection
 - Performance optimization suggestions
@@ -175,6 +171,7 @@ AI-assisted code review process that helps identify issues, suggest improvements
 Workflow for optimizing database performance, schema design, and query efficiency.
 
 #### Key Capabilities:
+
 - Index optimization recommendations
 - Query performance analysis
 - Schema design suggestions
@@ -186,6 +183,7 @@ Workflow for optimizing database performance, schema design, and query efficienc
 Streamlined process for designing, implementing, and documenting APIs.
 
 #### Key Components:
+
 - Contract-first design assistance
 - Automatic validation implementation
 - Documentation generation
@@ -197,6 +195,7 @@ Streamlined process for designing, implementing, and documenting APIs.
 AI-powered debugging workflow to identify and resolve issues efficiently.
 
 #### Key Features:
+
 - Root cause analysis
 - Pattern recognition from error logs
 - Solution recommendations
@@ -206,6 +205,7 @@ AI-powered debugging workflow to identify and resolve issues efficiently.
 ## Best Practices for Agentic Development
 
 ### General Guidelines
+
 - Maintain human oversight at critical decision points
 - Validate AI-generated code before committing
 - Follow established architectural patterns and coding standards
@@ -213,6 +213,7 @@ AI-powered debugging workflow to identify and resolve issues efficiently.
 - Use AI to enhance, not replace, human creativity and judgment
 
 ### Code Quality
+
 - Maintain minimum 95% test coverage
 - Follow naming conventions specified in project guidelines
 - Document public APIs and complex logic
@@ -220,6 +221,7 @@ AI-powered debugging workflow to identify and resolve issues efficiently.
 - Implement proper error handling and logging
 
 ### Collaboration
+
 - Share AI-generated insights with team members
 - Document AI-assisted solutions for knowledge sharing
 - Use AI to facilitate onboarding and knowledge transfer
@@ -256,7 +258,6 @@ Contributions to improve agentic development workflows are welcome. Please submi
 
 ### Additional Documentation
 
-- [Installation Guide](./install.md)
 - [Agentic Development Patterns](./docs/patterns.md)
 - [AI Prompt Engineering Guide](./docs/prompts.md)
 - [Workflow Templates](./templates/)

@@ -84,7 +84,7 @@ bd create "USER-123: Feature title" \
   --json
 ```
 
-## bd MCP Functions (Claude Code/Windsurf)
+## bd MCP Functions (Claude Code)
 
 ### Basic Operations
 
@@ -135,35 +135,34 @@ specify check
 
 # Initialize for AI assistants
 specify init --here --ai claude
-specify init --here --ai windsurf
 ```
 
 ### Slash Commands (in AI Assistants)
 
 ```
 # Create project constitution
-/speckit.constitution
+/speckit-constitution
 
 # Create feature specification
-/speckit.specify <feature description>
+/speckit-specify <feature description>
 
 # Create implementation plan
-/speckit.plan
+/speckit-plan
 
 # Generate tasks from plan
-/speckit.tasks
+/speckit-tasks
 
 # Execute implementation
-/speckit.implement
+/speckit-implement
 
 # Identify unclear requirements
-/speckit.clarify
+/speckit-clarify
 
 # Analyze consistency across artifacts
-/speckit.analyze
+/speckit-analyze
 
 # Convert tasks to GitHub issues
-/speckit.taskstoissues
+/speckit-taskstoissues
 ```
 
 ## Workflow: New Feature
@@ -178,7 +177,7 @@ bd create "Feature: Export reports to CSV" -t feature -p 1 --json
 ### 2. Create Spec Kit Feature
 
 ```
-/speckit.specify Export reports to CSV
+/speckit-specify Export reports to CSV
 
 User should be able to export reports in CSV format with all columns and data.
 ```
@@ -188,7 +187,7 @@ Result: Creates `specs/101-export-reports/spec.md`
 ### 3. Create Implementation Plan
 
 ```
-/speckit.plan
+/speckit-plan
 ```
 
 Result: Creates `specs/101-export-reports/plan.md`
@@ -196,7 +195,7 @@ Result: Creates `specs/101-export-reports/plan.md`
 ### 4. Generate Tasks
 
 ```
-/speckit.tasks
+/speckit-tasks
 ```
 
 Result:
@@ -207,7 +206,7 @@ Result:
 ### 5. Implement
 
 ```
-/speckit.implement
+/speckit-implement
 ```
 
 AI assistant:
@@ -248,7 +247,7 @@ bd create "USER-456: Filter reports by date" \
 ### 2. Create Spec from JIRA
 
 ```
-/speckit.specify USER-456: Filter reports by date range
+/speckit-specify USER-456: Filter reports by date range
 
 [Paste JIRA user story]
 [Paste Gherkin scenarios]
@@ -280,21 +279,6 @@ After PR merge, update JIRA story to "Done" status.
 }
 ```
 
-### Windsurf
-
-`~/.codeium/windsurf/mcp_settings.json`:
-
-```json
-{
-  "mcpServers": {
-    "beads": {
-      "command": "beads-mcp",
-      "args": []
-    }
-  }
-}
-```
-
 ## File Structure
 
 ```
@@ -305,10 +289,7 @@ After PR merge, update JIRA story to "Done" status.
 ├── .specify/              # Spec Kit internals
 ├── .claude/
 │   └── commands/
-│       └── speckit.*.md   # Claude Code slash commands
-├── .windsurf/
-│   └── workflows/
-│       └── speckit.*.md   # Windsurf workflows
+│       └── speckit.*.md   # Claude Code slash commands (from `specify init`)
 ├── specs/
 │   └── 001-feature-name/
 │       ├── spec.md        # Feature specification
@@ -386,6 +367,5 @@ source ~/.zshrc
 - **bd**: https://github.com/steveyegge/beads
 - **Spec Kit**: https://github.com/github/spec-kit
 - **beads-mcp**: https://pypi.org/project/beads-mcp/
-- **Installation Guide**: `docs/beads-spec-kit-onboarding/INSTALLATION.md`
 - **JIRA Workflow**: `docs/beads-spec-kit-onboarding/jira-to-speckit-workflow.md`
 - **Slides**: `docs/beads-spec-kit-onboarding/slides.md`

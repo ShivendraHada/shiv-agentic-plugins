@@ -1,6 +1,6 @@
 # AI Prompt Engineering Guide
 
-This guide provides best practices for creating effective prompts for AI-assisted development at Wiser Solutions.
+This guide provides best practices for creating effective prompts for AI-assisted development at Shiv Solutions.
 
 ## Principles of Effective Prompts
 

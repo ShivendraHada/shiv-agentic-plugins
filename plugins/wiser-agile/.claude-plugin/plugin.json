@@ -1,9 +1,0 @@
-{
-  "name": "wiser-agile",
-  "version": "1.1.0",
-  "description": "Wiser Solutions agile workflows: create epics, stories, technical enablement stories, auto-groom sprints, score INVEST criteria, and transform notes into work items. Jira integration with configurable defaults.",
-  "author": {
-    "name": "Wiser Solutions",
-    "email": "engineering@wisersolutions.com"
-  }
-}

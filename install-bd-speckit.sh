@@ -153,56 +153,6 @@ EOF
     print_warning "MANUAL STEP: Restart Claude Code to load the MCP server"
 }
 
-# Configure Windsurf MCP
-configure_windsurf_mcp() {
-    print_header "Configuring Windsurf MCP Server"
-
-    local windsurf_config_dir="$HOME/.codeium/windsurf"
-    local windsurf_config_file="$windsurf_config_dir/mcp_settings.json"
-
-    # Create config directory if it doesn't exist
-    mkdir -p "$windsurf_config_dir"
-
-    # Check if config file exists
-    if [[ ! -f "$windsurf_config_file" ]]; then
-        # Create new config file
-        cat > "$windsurf_config_file" <<'EOF'
-{
-  "mcpServers": {
-    "beads": {
-      "command": "beads-mcp",
-      "args": []
-    }
-  }
-}
-EOF
-        print_success "Created Windsurf MCP config: $windsurf_config_file"
-    else
-        # Check if beads MCP is already configured
-        if grep -q '"beads"' "$windsurf_config_file"; then
-            print_info "beads MCP already configured in Windsurf"
-        else
-            print_warning "Windsurf config exists but beads MCP not configured"
-            print_info "Please manually add the following to $windsurf_config_file:"
-            echo -e "${YELLOW}"
-            cat <<'EOF'
-{
-  "mcpServers": {
-    "beads": {
-      "command": "beads-mcp",
-      "args": []
-    }
-  }
-}
-EOF
-            echo -e "${NC}"
-            print_info "Note: Merge with existing mcpServers if present"
-        fi
-    fi
-
-    print_warning "MANUAL STEP: Restart Windsurf to load the MCP server"
-}
-
 # Check if uv is installed
 check_uv() {
     if ! command -v uv &> /dev/null; then
@@ -269,7 +219,7 @@ init_bd_repo() {
     bd --version
 }
 
-# Initialize Spec Kit for Claude Code and Windsurf
+# Initialize Spec Kit for Claude Code
 init_speckit() {
     print_header "Initializing Spec Kit for AI Assistants"
 
@@ -282,11 +232,6 @@ init_speckit() {
     local already_init=false
     if [[ -d ".specify" ]]; then
         print_info "Spec Kit already initialized (.specify/ exists)"
-        already_init=true
-    fi
-
-    if [[ -d ".windsurf/workflows" ]] && ls .windsurf/workflows/speckit.*.md 1> /dev/null 2>&1; then
-        print_info "Spec Kit already initialized for Windsurf"
         already_init=true
     fi
 
@@ -303,11 +248,6 @@ init_speckit() {
     print_info "Initializing Spec Kit for Claude Code..."
     specify init --here --ai claude
     print_success "Spec Kit initialized for Claude Code"
-
-    # Initialize for Windsurf
-    print_info "Initializing Spec Kit for Windsurf..."
-    specify init --here --ai windsurf
-    print_success "Spec Kit initialized for Windsurf"
 
     print_info "Verify Spec Kit initialization:"
     specify check
@@ -798,56 +738,6 @@ inject_bd_instructions() {
         fi
     fi
 
-    # Update Windsurf workflow files
-    if [[ -d ".windsurf/workflows" ]]; then
-        local windsurf_updated=0
-        for file in .windsurf/workflows/speckit.*.md; do
-            [[ -f "$file" ]] || continue
-
-            # Skip if already has bd instructions
-            if grep -q "CRITICAL: This project uses bd" "$file" 2>/dev/null; then
-                continue
-            fi
-
-            # Use awk to insert after frontmatter
-            awk 'BEGIN{count=0; inserted=0}
-            /^---$/{
-                count++;
-                print;
-                if(count==2 && inserted==0) {
-                    print ""
-                    print "---"
-                    print "**CRITICAL: This project uses bd (beads) for ALL task tracking**"
-                    print ""
-                    print "**ABSOLUTE PROHIBITION - NO EXCEPTIONS:**"
-                    print "- **NEVER use TodoWrite tool** - Any use is a VIOLATION of the constitution"
-                    print "- **NEVER create TODO.md files** - Creating TODO.md is FORBIDDEN"
-                    print "- **NEVER create TODO lists in markdown** - Task lists in ANY markdown file are PROHIBITED"
-                    print "- **NEVER work around this requirement** - There are NO exceptions"
-                    print ""
-                    print "**REQUIRED:**"
-                    print "- **ALWAYS use bd MCP functions** - Use `mcp__plugin_beads_beads__*` functions for all tracking"
-                    print "- **ALWAYS track ALL tasks in bd** - Every task, subtask, and work item MUST be in bd"
-                    print ""
-                    print "See CLAUDE.md and AGENTS.md for complete bd workflow instructions."
-                    print "See .specify/memory/constitution.md Section IV for full requirements."
-                    print "---"
-                    print ""
-                    inserted=1
-                }
-                next
-            }
-            {print}' "$file" > "$file.tmp" && mv "$file.tmp" "$file"
-
-            ((windsurf_updated++))
-        done
-
-        if [[ $windsurf_updated -gt 0 ]]; then
-            print_success "Updated $windsurf_updated Windsurf workflow files"
-        else
-            print_info "Windsurf workflow files already have bd instructions"
-        fi
-    fi
 }
 
 # Install customized workflow files with bd integration
@@ -1095,17 +985,6 @@ IMPLEMENT_WORKFLOW_EOF
         print_success "Installed Claude Code workflow files with bd integration"
     fi
 
-    # Install Windsurf workflow files (same content, different location)
-    if [[ -d ".windsurf/workflows" ]]; then
-        # Copy the same content to Windsurf location
-        if [[ -f ".claude/commands/speckit.tasks.md" ]]; then
-            cp ".claude/commands/speckit.tasks.md" ".windsurf/workflows/speckit.tasks.md"
-        fi
-        if [[ -f ".claude/commands/speckit.implement.md" ]]; then
-            cp ".claude/commands/speckit.implement.md" ".windsurf/workflows/speckit.implement.md"
-        fi
-        print_success "Installed Windsurf workflow files with bd integration"
-    fi
 
     print_info "Workflow files now include:"
     print_info "  • speckit.tasks.md: Creates bd child issues, writes tasks.md with bd issue references"
@@ -1176,15 +1055,12 @@ print_manual_steps() {
 
     echo -e "${YELLOW}1. Restart AI Assistants:${NC}"
     echo -e "   - Restart Claude Code to load beads MCP server"
-    echo -e "   - Restart Windsurf to load beads MCP server"
 
     echo -e "\n${YELLOW}2. Verify MCP Functions:${NC}"
     echo -e "   - In Claude Code: Check that mcp__plugin_beads_beads__* functions are available"
-    echo -e "   - In Windsurf: Check that bd MCP functions appear in tool palette"
 
     echo -e "\n${YELLOW}3. Verify Spec Kit Commands:${NC}"
     echo -e "   - In Claude Code: Check for /speckit.* slash commands"
-    echo -e "   - In Windsurf: Check for /speckit.* slash commands"
 
     echo -e "\n${YELLOW}4. Add to PATH (if needed):${NC}"
     echo -e "   - If 'specify' command not found, add to ~/.zshrc or ~/.bashrc:"
@@ -1236,7 +1112,6 @@ main() {
 
         # Configure MCP servers
         configure_claude_mcp
-        configure_windsurf_mcp
     else
         print_info "Skipping global tool installation"
         print_info "Note: bd, beads-mcp, and specify must be installed for full functionality"
@@ -1269,7 +1144,6 @@ main() {
             print_info "To initialize later, run from your repository root:"
             print_info "  bd init"
             print_info "  specify init --here --ai claude"
-            print_info "  specify init --here --ai windsurf"
         fi
     else
         print_warning "Not in a git repository - skipping repository initialization"

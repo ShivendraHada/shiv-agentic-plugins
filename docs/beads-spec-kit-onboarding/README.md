@@ -1,15 +1,13 @@
 # Beads + Spec Kit Onboarding
 
-This directory contains comprehensive onboarding materials for using **bd (Beads)** and **Spec Kit** with AI assistants like Windsurf and Claude Code.
+This directory contains onboarding materials for using **bd (Beads)** and **Spec Kit** with Claude Code.
 
 ## 📚 Documentation
 
 ### Getting Started
 
-- **[INSTALLATION.md](INSTALLATION.md)** - Complete installation guide with automated script and manual steps
 - **[QUICK-REFERENCE.md](QUICK-REFERENCE.md)** - Command reference and common workflows
-- **[slides.md](slides.md)** - Presentation slides (also available as PowerPoint)
-- **[beads-speckit-onboarding.pptx](../../beads-speckit-onboarding.pptx)** - PowerPoint presentation
+- **[slides.md](slides.md)** - Presentation slides
 
 ### Workflows
 
@@ -38,11 +36,9 @@ The repository initialization in Phase 2 runs regardless of whether you skip too
 
 After running the installation script:
 
-1. **Restart AI assistants** (Claude Code and Windsurf)
+1. **Restart Claude Code**
 2. **Verify MCP functions** are available
-3. **Test Spec Kit slash commands** (`/speckit.*`)
-
-See [INSTALLATION.md](INSTALLATION.md) for detailed manual installation steps.
+3. **Test Spec Kit slash commands** (`/speckit-*`)
 
 ## 📖 What You'll Learn
 
@@ -58,10 +54,10 @@ See [INSTALLATION.md](INSTALLATION.md) for detailed manual installation steps.
 
 1. **Feature Development**
    - Create bd feature issue
-   - Use `/speckit.specify` to create specification
-   - Use `/speckit.plan` to create implementation plan
-   - Use `/speckit.tasks` to generate tasks (auto-creates bd task issues)
-   - Use `/speckit.implement` to execute (updates bd status)
+   - Use `/speckit-specify` to create specification
+   - Use `/speckit-plan` to create implementation plan
+   - Use `/speckit-tasks` to generate tasks (auto-creates bd task issues)
+   - Use `/speckit-implement` to execute (updates bd status)
 
 2. **JIRA Integration**
    - Sync JIRA stories to bd with `external_ref`
@@ -71,8 +67,7 @@ See [INSTALLATION.md](INSTALLATION.md) for detailed manual installation steps.
 
 3. **AI Assistant Collaboration**
    - Claude Code uses MCP functions for bd
-   - Windsurf uses MCP functions for bd
-   - Both use Spec Kit slash commands
+   - Uses Spec Kit slash commands
    - All changes tracked in git via `.beads/issues.jsonl`
 
 ## 🎯 Key Resources
@@ -80,16 +75,11 @@ See [INSTALLATION.md](INSTALLATION.md) for detailed manual installation steps.
 ### Installation
 
 - **Automated Script**: `../../install-bd-speckit.sh`
-- **Installation Guide**: [INSTALLATION.md](INSTALLATION.md)
 - **Quick Reference**: [QUICK-REFERENCE.md](QUICK-REFERENCE.md)
 
-### Presentations
+### Presentation
 
-- **Markdown Slides**: [slides.md](slides.md) (24 slides)
-- **PowerPoint**: [beads-speckit-onboarding.pptx](../../beads-speckit-onboarding.pptx) (24 slides)
-  - Includes JIRA integration workflows
-  - MCP server installation instructions
-  - Example workflows and best practices
+- **Slides**: [slides.md](slides.md)
 
 ### Workflows
 
@@ -115,7 +105,7 @@ See [INSTALLATION.md](INSTALLATION.md) for detailed manual installation steps.
 ### Spec Kit
 
 - **Purpose**: Spec-driven development toolkit
-- **Key Features**: `/speckit.*` commands, version-controlled specs
+- **Key Features**: `/speckit-*` commands, version-controlled specs
 - **Workflow**: specify → plan → tasks → implement
 - **GitHub**: https://github.com/github/spec-kit
 
@@ -131,20 +121,19 @@ See [INSTALLATION.md](INSTALLATION.md) for detailed manual installation steps.
 - Homebrew
 - Python 3
 - Git repository
-- Claude Code and/or Windsurf
+- Claude Code
 
 ## 🎓 Audience
 
 This onboarding is designed for:
 
-- Engineers using AI assistants (Claude Code, Windsurf)
+- Engineers using Claude Code
 - Teams transitioning from TODO.md to structured issue tracking
 - Teams using JIRA with INVEST stories and Gherkin acceptance criteria
 - Anyone wanting to maintain discipline and traceability in AI-assisted development
 
 ## 📞 Support
 
-- **Installation Issues**: See [INSTALLATION.md](INSTALLATION.md) troubleshooting section
 - **Workflow Questions**: See [QUICK-REFERENCE.md](QUICK-REFERENCE.md)
 - **JIRA Integration**: See [jira-to-speckit-workflow.md](jira-to-speckit-workflow.md)
 - **Project-Specific**: See `AGENTS.md` and `CLAUDE.md` in repository root
@@ -152,11 +141,11 @@ This onboarding is designed for:
 ## 🚦 Next Steps
 
 1. **Install**: Run `./install-bd-speckit.sh` from repository root
-2. **Review Slides**: Read [slides.md](slides.md) or view the PowerPoint
-3. **Try a Feature**: Use `/speckit.specify` to create your first feature
+2. **Review Slides**: Read [slides.md](slides.md)
+3. **Try a Feature**: Use `/speckit-specify` to create your first feature
 4. **Explore JIRA Workflow**: If using JIRA, see [jira-to-speckit-workflow.md](jira-to-speckit-workflow.md)
 
 ---
 
-**Last Updated**: 2025-11-19
-**Version**: 1.0
+**Last Updated**: 2026-09-28
+**Version**: 1.1
