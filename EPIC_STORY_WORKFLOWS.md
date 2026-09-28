@@ -21,7 +21,7 @@ This comprehensive guide covers installing and using the Epic and Story manageme
 #### Using Claude Code
 1. **Install the plugin globally**:
    ```bash
-   curl -fsSL https://raw.githubusercontent.com/shivendrahada/agentic-development/main/install-shiv-plugins.sh | bash -s install
+   curl -fsSL https://raw.githubusercontent.com/shivendrahada/shiv-agentic-plugins/main/install-shiv-plugins.sh | bash -s install
    ```
 2. **Type `/` in Claude Code** to see available commands
 3. **Create an Epic**: `/create-epic` → Follow SMART criteria prompts
@@ -45,20 +45,20 @@ This comprehensive guide covers installing and using the Epic and Story manageme
 
 ### Prerequisites
 - **Claude Code** installed
-- Access to this agentic-development repository
+- Access to this shiv-agentic-plugins repository
 - Confluence access for the Shiv Solutions Epic and Story Standard (Page ID: 4660658177)
 
 ### Installing the Plugin
 
 #### Quick Install (One Command)
 ```bash
-curl -fsSL https://raw.githubusercontent.com/shivendrahada/agentic-development/main/install-shiv-plugins.sh | bash -s install
+curl -fsSL https://raw.githubusercontent.com/shivendrahada/shiv-agentic-plugins/main/install-shiv-plugins.sh | bash -s install
 ```
 
 #### Manual Installation
 ```bash
 # Clone repository
-git clone --depth 1 git@github.com:shivendrahada/agentic-development.git temp-plugins
+git clone --depth 1 git@github.com:shivendrahada/shiv-agentic-plugins.git temp-plugins
 ./temp-plugins/install-shiv-plugins.sh install
 rm -rf temp-plugins
 ```

@@ -5,7 +5,7 @@ argument-hint: Plugin name and brief description (e.g. "shiv-analytics - Analyti
 
 # Create Plugin
 
-Scaffold a new plugin in the Shiv agentic-development repository following the established conventions.
+Scaffold a new plugin in the shiv-agentic-plugins repository following the established conventions.
 
 ## User Input
 

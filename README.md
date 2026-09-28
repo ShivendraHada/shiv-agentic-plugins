@@ -1,4 +1,4 @@
-# Agentic Development
+# Shiv Agentic Plugins
 
 This repository contains tools, guidelines, and resources for implementing agentic development practices across Shiv Solutions' engineering teams. Agentic development leverages AI-assisted workflows to enhance productivity, quality, and consistency in software development processes.
 
@@ -27,13 +27,13 @@ Install all Shiv plugins globally so they work in every project:
 
 ```bash
 # One-time global install
-curl -fsSL https://raw.githubusercontent.com/shivendrahada/agentic-development/main/install-shiv-plugins.sh | bash -s install
+curl -fsSL https://raw.githubusercontent.com/shivendrahada/shiv-agentic-plugins/main/install-shiv-plugins.sh | bash -s install
 ```
 
 Or clone and run manually:
 
 ```bash
-git clone --depth 1 git@github.com:shivendrahada/agentic-development.git temp-plugins
+git clone --depth 1 git@github.com:shivendrahada/shiv-agentic-plugins.git temp-plugins
 ./temp-plugins/install-shiv-plugins.sh install
 rm -rf temp-plugins
 ```

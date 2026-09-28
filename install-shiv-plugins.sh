@@ -18,7 +18,7 @@
 set -e
 
 # Configuration
-REPO_URL="${SHIV_REPO_URL:-https://github.com/shivendrahada/agentic-development.git}"
+REPO_URL="${SHIV_REPO_URL:-https://github.com/shivendrahada/shiv-agentic-plugins.git}"
 BRANCH="${SHIV_BRANCH:-main}"
 MARKETPLACE_DIR="$HOME/.claude/plugins/marketplaces/shiv-agentic-plugins"
 PLUGINS_SUBDIR="plugins"
@@ -102,7 +102,7 @@ cmd_install() {
 
     # Create symlink for repo-name-based path resolution
     # Claude Code may resolve marketplace path from the GitHub repo name
-    local repo_name_dir="$HOME/.claude/plugins/marketplaces/shivendrahada-agentic-development"
+    local repo_name_dir="$HOME/.claude/plugins/marketplaces/shivendrahada-shiv-agentic-plugins"
     if [ ! -e "$repo_name_dir" ]; then
         ln -s "$MARKETPLACE_DIR" "$repo_name_dir"
         print_success "Created symlink for repo-name resolution"
@@ -341,7 +341,7 @@ cmd_remove() {
     read -r -p "  Remove all Shiv plugins? [y/N] " confirm
     if [[ "$confirm" =~ ^[Yy]$ ]]; then
         # Remove repo-name symlink if it exists
-        local repo_name_dir="$HOME/.claude/plugins/marketplaces/shivendrahada-agentic-development"
+        local repo_name_dir="$HOME/.claude/plugins/marketplaces/shivendrahada-shiv-agentic-plugins"
         [ -L "$repo_name_dir" ] && rm "$repo_name_dir" && print_success "Removed repo-name symlink"
 
         rm -rf "$MARKETPLACE_DIR"
@@ -502,7 +502,7 @@ register_marketplace() {
         '."shiv-agentic-plugins" = {
             "source": {
                 "source": "github",
-                "repo": "shivendrahada/agentic-development"
+                "repo": "shivendrahada/shiv-agentic-plugins"
             },
             "installLocation": $dir,
             "lastUpdated": $now
