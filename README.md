@@ -258,7 +258,4 @@ Contributions to improve agentic development workflows are welcome. Please submi
 
 ### Additional Documentation
 
-- [Agentic Development Patterns](./docs/patterns.md)
-- [AI Prompt Engineering Guide](./docs/prompts.md)
-- [Workflow Templates](./templates/)
-- [Case Studies](./docs/case-studies.md)
+- [TDD Test Templates](./plugins/shiv-dev/skills/tdd-rules/references/test-templates.md)

@@ -8,7 +8,7 @@ Show the current state of all installed Shiv plugins.
 
 ## Steps
 
-1. Check if plugins are installed at `~/.claude/plugins/marketplaces/shiv-plugins/plugins/`.
+1. Check if plugins are installed at `~/.claude/plugins/marketplaces/shiv-agentic-plugins/plugins/`.
 
 2. For each plugin directory (`shiv-agile`, `shiv-dev`, `shiv-speckit`, `shiv-tools`):
    - Read `.claude-plugin/plugin.json` for the plugin description
@@ -18,7 +18,7 @@ Show the current state of all installed Shiv plugins.
 
 3. Show version info:
    ```bash
-   cd ~/.claude/plugins/marketplaces/shiv-plugins && git log -1 --format="%h %ci %s"
+   cd ~/.claude/plugins/marketplaces/shiv-agentic-plugins && git log -1 --format="%h %ci %s"
    ```
 
 4. Detect local overrides in the current project:

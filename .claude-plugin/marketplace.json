@@ -1,6 +1,6 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
-  "name": "shiv-plugins",
+  "name": "shiv-agentic-plugins",
   "description": "Shiv Solutions development plugins for agile workflows, TDD, spec-driven development, and plugin management",
   "owner": {
     "name": "Shiv Solutions",

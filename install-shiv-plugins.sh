@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Shiv Plugins Manager for Claude Code
+# Shiv Agentic Plugins Manager for Claude Code
 #
 # Installs, updates, and manages Shiv plugins globally for Claude Code.
 # Plugins are available across all projects without per-project installation.
@@ -20,7 +20,7 @@ set -e
 # Configuration
 REPO_URL="${SHIV_REPO_URL:-https://github.com/shivendrahada/agentic-development.git}"
 BRANCH="${SHIV_BRANCH:-main}"
-MARKETPLACE_DIR="$HOME/.claude/plugins/marketplaces/shiv-plugins"
+MARKETPLACE_DIR="$HOME/.claude/plugins/marketplaces/shiv-agentic-plugins"
 PLUGINS_SUBDIR="plugins"
 KNOWN_MARKETPLACES="$HOME/.claude/plugins/known_marketplaces.json"
 
@@ -42,7 +42,7 @@ NC='\033[0m'
 # Output helpers
 print_header() {
     echo ""
-    echo -e "${BLUE}${BOLD}Shiv Plugins Manager for Claude Code${NC}"
+    echo -e "${BLUE}${BOLD}Shiv Agentic Plugins Manager for Claude Code${NC}"
     echo -e "${BLUE}======================================${NC}"
     echo ""
 }
@@ -184,7 +184,7 @@ cmd_list() {
         exit 1
     fi
 
-    echo -e "${BOLD}Installed Shiv Plugins:${NC}"
+    echo -e "${BOLD}Installed Shiv Agentic Plugins:${NC}"
     echo ""
 
     for plugin_dir in "$MARKETPLACE_DIR/$PLUGINS_SUBDIR"/shiv-*/; do
@@ -348,7 +348,7 @@ cmd_remove() {
         print_success "Shiv plugins removed"
 
         # Remove plugin cache
-        rm -rf "$HOME/.claude/plugins/cache/shiv-plugins"
+        rm -rf "$HOME/.claude/plugins/cache/shiv-agentic-plugins"
         print_success "Removed plugin cache"
 
         # Deregister plugins from installed_plugins.json
@@ -356,7 +356,7 @@ cmd_remove() {
         if command -v jq &>/dev/null && [ -f "$installed_json" ]; then
             local tmp
             tmp=$(mktemp)
-            jq '.plugins |= with_entries(select(.key | endswith("@shiv-plugins") | not))' "$installed_json" > "$tmp" && mv "$tmp" "$installed_json"
+            jq '.plugins |= with_entries(select(.key | endswith("@shiv-agentic-plugins") | not))' "$installed_json" > "$tmp" && mv "$tmp" "$installed_json"
             print_success "Deregistered plugins from installed list"
         fi
 
@@ -364,7 +364,7 @@ cmd_remove() {
         if command -v jq &>/dev/null && [ -f "$KNOWN_MARKETPLACES" ]; then
             local tmp
             tmp=$(mktemp)
-            jq 'del(."shiv-plugins")' "$KNOWN_MARKETPLACES" > "$tmp" && mv "$tmp" "$KNOWN_MARKETPLACES"
+            jq 'del(."shiv-agentic-plugins")' "$KNOWN_MARKETPLACES" > "$tmp" && mv "$tmp" "$KNOWN_MARKETPLACES"
             print_success "Deregistered from marketplace list"
         fi
     else
@@ -433,7 +433,7 @@ cmd_migrate() {
 # Helper: Install plugins into Claude Code cache and registry
 # ─────────────────────────────────────────────
 install_plugins_to_cache() {
-    local cache_dir="$HOME/.claude/plugins/cache/shiv-plugins"
+    local cache_dir="$HOME/.claude/plugins/cache/shiv-agentic-plugins"
     local installed_json="$HOME/.claude/plugins/installed_plugins.json"
     local now
     now=$(date -u +"%Y-%m-%dT%H:%M:%S.000Z")
@@ -468,7 +468,7 @@ install_plugins_to_cache() {
 
         # Register in installed_plugins.json
         if [ "$JQ_AVAILABLE" = true ]; then
-            local key="${plugin_name}@shiv-plugins"
+            local key="${plugin_name}@shiv-agentic-plugins"
             local tmp
             tmp=$(mktemp)
             jq --arg key "$key" \
@@ -499,7 +499,7 @@ register_marketplace() {
     now=$(date -u +"%Y-%m-%dT%H:%M:%S.000Z")
 
     jq --arg dir "$MARKETPLACE_DIR" --arg now "$now" \
-        '."shiv-plugins" = {
+        '."shiv-agentic-plugins" = {
             "source": {
                 "source": "github",
                 "repo": "shivendrahada/agentic-development"

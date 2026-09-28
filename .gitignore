@@ -4,14 +4,10 @@
 
 # Ignore artifacts in working directories (but keep folder structure)
 specs/*
-scripts/*
-articles/*
 agile/*
 
 # Keep .gitkeep files to preserve folder structure
 !specs/.gitkeep
-!scripts/.gitkeep
-!articles/.gitkeep
 !agile/.gitkeep
 
 # Allow agile subdirectories (epic folders and their contents are tracked)

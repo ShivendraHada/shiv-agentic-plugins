@@ -11,7 +11,7 @@ Update all globally installed Shiv plugins to the latest version.
 1. Run the following command to pull the latest plugin updates:
 
 ```bash
-cd ~/.claude/plugins/marketplaces/shiv-plugins && git fetch origin main --depth 1 && git reset --hard origin/main
+cd ~/.claude/plugins/marketplaces/shiv-agentic-plugins && git fetch origin main --depth 1 && git reset --hard origin/main
 ```
 
 2. Report what changed by comparing the previous and new versions.

@@ -75,11 +75,15 @@ For complete workflow details, see [AGENTS.md](AGENTS.md).
 
 ## Project Organization
 
-This project is a general-purpose workspace for research, Agile artifacts, articles, and experimentation. Follow these folder conventions:
+This repository is a Claude Code plugin marketplace (`shiv-agentic-plugins`). Follow these folder conventions:
+
+### Plugins (`plugins/`)
+
+All distributable Claude Code plugins (commands, skills, agents) live under `plugins/<plugin-name>/`. This is the source of truth for everything installed via `install-shiv-plugins.sh` — see [README.md](README.md) for the plugin list.
 
 ### Agile Artifacts (`agile/`)
 
-All Agile artifacts (Epics, Stories, acceptance criteria, etc.) go under the `agile/` folder.
+Agile artifacts (Epics, Stories, acceptance criteria) created while working *in this repo itself* go under the `agile/` folder. This is separate from `/create-epic` and `/create-story` in the `shiv-agile` plugin, which create tickets directly on Jira — `agile/` is for local planning docs when Jira isn't the right fit.
 
 **Structure:**
 ```
@@ -96,44 +100,11 @@ agile/
 - ✅ Use consistent naming: `epic.md` for the Epic, story IDs for Stories
 - ❌ Do NOT scatter Agile artifacts in the root or other folders
 
-### Scripts (`scripts/`)
-
-Research scripts, prototypes, and temporary/experimental scripts go in the `scripts/` folder.
-
-**Examples:**
-- Data extraction or scraping scripts
-- One-off analysis scripts
-- Proof-of-concept code
-- Utility scripts for project tasks
-
-**Rules:**
-- ✅ Add a brief comment header explaining the script's purpose
-- ✅ Clean up or archive scripts that are no longer needed
-- ❌ Do NOT put production code here
-
-### Articles (`articles/`)
-
-Writing not directly related to this project (blog posts, documentation drafts, research notes, essays) goes in the `articles/` folder.
-
-**Structure:**
-```
-articles/
-├── <topic>/             # Organize by topic if multiple related pieces
-│   ├── article.md
-│   └── assets/          # Images, diagrams, etc.
-└── standalone-article.md
-```
-
-**Rules:**
-- ✅ Use descriptive filenames or topic folders
-- ✅ Keep associated assets (images, diagrams) with their articles
-- ❌ Do NOT mix project documentation with external articles
-
 ---
 
 ## Agentic Development Workflows
 
-This project is designed as a workspace for **agentic development**—using AI assistants to drive software development, research, and content creation workflows. Here's how to use the folder structure effectively with AI agents.
+This project is designed as a workspace for **agentic development**—using AI assistants to build, maintain, and extend the Claude Code plugins in this repo. Here's how to use the folder structure effectively with AI agents.
 
 ### Overview: The Agentic Development Loop
 
@@ -143,10 +114,9 @@ This project is designed as a workspace for **agentic development**—using AI a
 ├─────────────────────────────────────────────────────────────┤
 │  1. PLAN      → Create Epic/Stories in agile/<epic-id>/     │
 │  2. TRACK     → Create bd issues for implementation tasks   │
-│  3. PROTOTYPE → Write exploratory code in scripts/          │
-│  4. BUILD     → Implement features (tracked via bd)         │
-│  5. DOCUMENT  → Write articles/learnings in articles/       │
-│  6. ITERATE   → Close issues, sync, push, repeat            │
+│  3. BUILD     → Implement plugin commands/skills/agents,    │
+│                 tracked via bd                              │
+│  4. ITERATE   → Close issues, sync, push, repeat            │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -188,63 +158,7 @@ bd close <issue-id>
 bd sync
 ```
 
-### Workflow 2: Research and Prototyping
-
-Use this workflow when exploring new technologies, APIs, or approaches.
-
-**Step 1: Create Research Script**
-```python
-# scripts/explore-new-api.py
-"""
-Research script: Exploring the XYZ API
-Purpose: Evaluate feasibility for feature EPIC-002
-Author: AI Assistant
-Date: 2024-01-15
-"""
-# Prototype code here...
-```
-
-**Step 2: Track Research in bd**
-```
-bd create --title="Research XYZ API integration options" --type=task
-bd update <issue-id> --status=in_progress
-# ... run experiments in scripts/ ...
-bd close <issue-id> --reason="Completed - documented findings in articles/xyz-api-research/"
-```
-
-**Step 3: Document Findings**
-```
-articles/
-└── xyz-api-research/
-    ├── findings.md      # Summary of research
-    ├── code-samples.md  # Key code patterns discovered
-    └── decision.md      # Recommendation and rationale
-```
-
-### Workflow 3: Writing and Content Creation
-
-Use this workflow for blog posts, documentation, or technical writing.
-
-**Step 1: Create Article Structure**
-```
-articles/
-└── building-ai-agents/
-    ├── outline.md       # Initial structure
-    ├── draft-v1.md      # First draft
-    ├── assets/
-    │   └── architecture-diagram.png
-    └── final.md         # Polished version
-```
-
-**Step 2: Track Writing Progress**
-```
-bd create --title="Write article: Building AI Agents" --type=task
-bd create --title="Create diagrams for AI Agents article" --type=task
-bd create --title="Review and edit AI Agents article" --type=task
-# Set dependencies so review happens after writing
-```
-
-### Workflow 4: Multi-Session Agentic Projects
+### Workflow 2: Multi-Session Agentic Projects
 
 For larger projects spanning multiple AI sessions:
 
@@ -273,9 +187,7 @@ For larger projects spanning multiple AI sessions:
 | Practice | Why It Matters |
 |----------|----------------|
 | **Always use bd for tracking** | Persists across sessions, visible to all agents |
-| **Keep scripts disposable** | Prototypes in `scripts/` can be deleted without guilt |
 | **Epic folders are complete units** | Everything about a feature lives together |
-| **Articles capture institutional knowledge** | Learnings don't get lost when chat history clears |
 | **Commit frequently** | Small commits make it easy to resume or rollback |
 | **Use dependencies in bd** | Prevents working on tasks with unmet prerequisites |
 
@@ -296,19 +208,13 @@ bd create --title="Add session management" --type=task --priority=1
 bd create --title="Write auth integration tests" --type=task --priority=2
 # Sets dependencies...
 
-# 4. AI prototypes in scripts/
-# scripts/test-oauth-flow.py - Quick validation of OAuth flow
-
-# 5. AI implements (tracked via bd)
+# 4. AI implements (tracked via bd)
 bd ready
 bd update <issue> --status=in_progress
 # ... implements feature ...
 bd close <issue>
 
-# 6. AI documents learnings
-# articles/oauth-implementation-notes.md
-
-# 7. Session ends properly
+# 5. Session ends properly
 bd sync
 git add .
 git commit -m "feat: Add OAuth authentication (EPIC-AUTH)"

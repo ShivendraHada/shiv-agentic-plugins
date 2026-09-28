@@ -186,3 +186,9 @@ A TDD task is complete when:
 4. Code has been refactored and is clean.
 5. No linting or static analysis warnings remain.
 6. The commit history is clean and each commit message is scoped to the change.
+
+## Reference Files
+
+| File | Contents |
+|------|----------|
+| `references/test-templates.md` | Unit and integration test boilerplate (NestJS) covering services, controllers, and repositories |
