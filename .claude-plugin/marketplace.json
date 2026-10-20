@@ -1,0 +1,66 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "shiv-agentic-plugins",
+  "description": "Shiv Agentic Plugins development plugins for agile workflows, TDD, spec-driven development, and plugin management",
+  "owner": {
+    "name": "Shiv Agentic Plugins",
+    "email": "engineering@shivsolutions.com"
+  },
+  "plugins": [
+    {
+      "name": "shiv-agile",
+      "description": "Shiv Agentic Plugins agile workflows: create epics, stories, technical enablement stories, bugfixes, auto-groom sprints, score INVEST criteria, and transform notes into work items. Jira integration with configurable defaults.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Shiv Agentic Plugins",
+        "email": "engineering@shivsolutions.com"
+      },
+      "source": "./plugins/shiv-agile",
+      "category": "productivity"
+    },
+    {
+      "name": "shiv-dev",
+      "description": "Shiv Agentic Plugins development workflows: agentic TDD with human checkpoints, JIRA-integrated TDD, Jira-to-Terraform infrastructure pipelines, and automated PR code review",
+      "version": "1.0.0",
+      "author": {
+        "name": "Shiv Agentic Plugins",
+        "email": "engineering@shivsolutions.com"
+      },
+      "source": "./plugins/shiv-dev",
+      "category": "development"
+    },
+    {
+      "name": "shiv-speckit",
+      "description": "Speckit specification toolkit: specify features, clarify requirements, plan implementations, generate tasks, implement with bd tracking, analyze cross-artifact consistency, generate checklists, manage project constitutions, and export tasks to GitHub issues",
+      "version": "1.0.0",
+      "author": {
+        "name": "Shiv Agentic Plugins",
+        "email": "engineering@shivsolutions.com"
+      },
+      "source": "./plugins/shiv-speckit",
+      "category": "productivity"
+    },
+    {
+      "name": "shiv-tools",
+      "description": "Shiv plugin management utilities: sync plugins, check status, detect local overrides, and scaffold new plugins",
+      "version": "1.0.0",
+      "author": {
+        "name": "Shiv Agentic Plugins",
+        "email": "engineering@shivsolutions.com"
+      },
+      "source": "./plugins/shiv-tools",
+      "category": "utilities"
+    },
+    {
+      "name": "shiv-design-docs",
+      "description": "Design documentation toolkit for Confluence: create Technical Architecture, Detailed Design, ADR, Runbook, and API Design documents from Jira epics/tickets. Supports bidirectional sync, template extraction, and Confluence-native formatting.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Shiv Agentic Plugins",
+        "email": "engineering@shivsolutions.com"
+      },
+      "source": "./plugins/shiv-design-docs",
+      "category": "documentation"
+    }
+  ]
+}

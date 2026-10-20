@@ -1,0 +1,15 @@
+# Ignore generated files
+*.pptx
+*.pdf
+
+# Ignore artifacts in working directories (but keep folder structure)
+specs/*
+agile/*
+
+# Keep .gitkeep files to preserve folder structure
+!specs/.gitkeep
+!agile/.gitkeep
+
+# Allow agile subdirectories (epic folders and their contents are tracked)
+!agile/*/
+**/.DS_Store
